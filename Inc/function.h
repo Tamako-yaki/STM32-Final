@@ -42,7 +42,7 @@
 #define SPRITE_DINO_RUN_2    133  // Dino running frame 2 (16x16)
 
 // Game constants
-#define GROUND_PAGE          6    // The page/row where ground is drawn
+#define GROUND_PAGE          7    // The page/row where ground is drawn (bottom of LCD)
 #define DINO_GROUND_Y        64   // Dino's Y position when on ground
 #define JUMP_MAX_HEIGHT      3    // Maximum jump height in pages
 #define JUMP_HANG_TIME       8    // Frames to stay at jump peak (makes jump longer)

@@ -187,7 +187,7 @@ int main(void)
       if (frameCount % 100 == 0) {  // Spawn every 100 frames (~2 seconds at 50 FPS)
         for (int i = 0; i < MAX_OBSTACLES; i++) {
           if (!obstacles[i].active) {
-            obstacles[i].x = GROUND_PAGE - 2;
+            obstacles[i].x = GROUND_PAGE - 1;  // One page above ground
             obstacles[i].y = 120;  // Start from right side
             obstacles[i].type = 1;  // Always use small cactus
             obstacles[i].active = 1;

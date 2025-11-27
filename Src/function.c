@@ -92,8 +92,8 @@ void jump(unsigned char *a, unsigned char *b) {
 
 // Initialize game state
 void initGameState(DinoGameState *state) {
-    state->dinoX = GROUND_PAGE - 2;  // Start 2 pages above ground
-    state->dinoY = 8;  // Leftmost position (was DINO_GROUND_Y=64)
+    state->dinoX = GROUND_PAGE - 1;  // Start 1 page above ground (page 6)
+    state->dinoY = 8;  // Leftmost position
     state->dinoState = 0;  // Running
     state->animFrame = 0;
     state->jumpHeight = 0;
@@ -178,10 +178,10 @@ void drawCloud(unsigned char x, unsigned char y) {
 
 // Draw ground line
 void drawGroundLine(unsigned char y) {
-    // Draw a line across the bottom
+    // Draw a continuous line across the entire width at GROUND_PAGE
     unsigned char sprite[1] = {SPRITE_GROUND_LINE};
-    for (unsigned char i = 0; i < 16; i++) {
-        LCD_DrawString(GROUND_PAGE, y + (i * 8), sprite, 1);
+    for (unsigned char i = 0; i < 16; i++) {  // 128 pixels / 8 = 16 sprites
+        LCD_DrawString(GROUND_PAGE, i * 8, sprite, 1);
     }
 }
 
