@@ -155,6 +155,7 @@ int main(void)
   drawCloud(0, 90);   // Another cloud at top
   
   unsigned int frameCount = 0;
+  unsigned int obstacleFrameCounter = 0;
   unsigned char gameOver = 0;
 
   /* Infinite loop */
@@ -183,57 +184,65 @@ int main(void)
       
       // Spawn obstacles periodically
       frameCount++;
-      if (frameCount % 40 == 0) {  // Spawn every 40 frames
+      if (frameCount % 100 == 0) {  // Spawn every 100 frames (~2 seconds at 50 FPS)
         for (int i = 0; i < MAX_OBSTACLES; i++) {
           if (!obstacles[i].active) {
             obstacles[i].x = GROUND_PAGE - 2;
             obstacles[i].y = 120;  // Start from right side
-            obstacles[i].type = (frameCount % 80 == 0) ? 1 : 0;  // Alternate obstacle types
+            obstacles[i].type = (frameCount % 200 == 0) ? 1 : 0;  // Alternate obstacle types
             obstacles[i].active = 1;
             break;
           }
         }
       }
       
-      // Update and draw obstacles
-      for (int i = 0; i < MAX_OBSTACLES; i++) {
-        if (obstacles[i].active) {
-          // Clear old position
-          clearSprite(obstacles[i].x, obstacles[i].y, 2);
-          
-          // Move obstacle left
-          if (obstacles[i].y > 8) {
-            obstacles[i].y -= 8;
+      // Update and draw obstacles (slower than dino animation)
+      obstacleFrameCounter++;
+      if (obstacleFrameCounter >= (GAME_SPEED_DELAY / 20)) {  // Move obstacles based on GAME_SPEED_DELAY
+        obstacleFrameCounter = 0;
+        
+        for (int i = 0; i < MAX_OBSTACLES; i++) {
+          if (obstacles[i].active) {
+            // Clear old position
+            clearSprite(obstacles[i].x, obstacles[i].y, 2);
             
-            // Draw at new position
-            drawCactus(obstacles[i].x, obstacles[i].y, obstacles[i].type);
+            // Move obstacle left
+            if (obstacles[i].y > 8) {
+              obstacles[i].y -= 8;
             
-            // Collision detection - only if dino is on ground or close to it
-            // Check horizontal overlap first (Y axis = column/horizontal)
-            unsigned char horizontalOverlap = (obstacles[i].y >= game.dinoY - 4 && 
-                                               obstacles[i].y <= game.dinoY + 12);
-            
-            // Check vertical overlap (X axis = page/vertical, lower X = higher on screen)
-            // Dino must be at same level or below obstacle top to collide
-            unsigned char verticalOverlap = (game.dinoX >= obstacles[i].x - 1);
-            
-            if (horizontalOverlap && verticalOverlap) {
-              // Collision! Game Over
-              gameOver = 1;
+              // Draw at new position
+              drawCactus(obstacles[i].x, obstacles[i].y, obstacles[i].type);
+            } else {
+              // Obstacle moved off screen
+              obstacles[i].active = 0;
+              // Increase score
+              game.score++;
             }
-          } else {
-            // Obstacle moved off screen
-            obstacles[i].active = 0;
-            // Increase score
-            game.score++;
           }
         }
       }
       
-      // Increase game difficulty over time
-      if (game.score % 50 == 0 && game.gameSpeed > 30) {
-        game.gameSpeed -= 5;
+      // Collision detection (check every frame)
+      for (int i = 0; i < MAX_OBSTACLES; i++) {
+        if (obstacles[i].active) {
+          // Check horizontal overlap first (Y axis = column/horizontal)
+          unsigned char horizontalOverlap = (obstacles[i].y >= game.dinoY - 4 && 
+                                             obstacles[i].y <= game.dinoY + 12);
+          
+          // Check vertical overlap (X axis = page/vertical, lower X = higher on screen)
+          // Dino must be at same level or below obstacle top to collide
+          unsigned char verticalOverlap = (game.dinoX >= obstacles[i].x - 1);
+          
+          if (horizontalOverlap && verticalOverlap) {
+            // Collision! Game Over
+            gameOver = 1;
+            break;
+          }
+        }
       }
+      
+      // Increase game difficulty over time (not implemented yet)
+      // Can adjust GAME_SPEED_DELAY dynamically if needed
       
       // Wait for timer interrupt to trigger next frame
       while (!gameTimerFlag) {
@@ -374,7 +383,7 @@ void MX_TIM1_Init(void)
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 7200;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 1000;  // ~100ms per frame (10 FPS) for slower gameplay
+  htim1.Init.Period = 200;  // ~20ms per frame (50 FPS) for smooth animation
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   HAL_TIM_Base_Init(&htim1);
