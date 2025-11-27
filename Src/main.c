@@ -123,49 +123,9 @@ int main(void)
   MX_GPIO_Init();
   MX_ADC1_Init();
   MX_USART1_UART_Init();
-  MX_ADC1_Init();
+  MX_TIM1_Init();
   LCD_Init();
   LCD_Clear();
-
-  /* GPIO Config----------------------------------------------------------*/
-	LED1_GPIO_CLK_ENABLE();
-  LED2_GPIO_CLK_ENABLE();
-  LED3_GPIO_CLK_ENABLE();
-  LED4_GPIO_CLK_ENABLE();
-	
-	GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull  = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-
-	GPIO_InitStruct.Pin = LED1_PIN;
-  HAL_GPIO_Init(LED1_GPIO_PORT, &GPIO_InitStruct);
-
-  GPIO_InitStruct.Pin = LED2_PIN;
-  HAL_GPIO_Init(LED2_GPIO_PORT, &GPIO_InitStruct);
-
-  GPIO_InitStruct.Pin = LED3_PIN;
-  HAL_GPIO_Init(LED3_GPIO_PORT, &GPIO_InitStruct);
-
-  GPIO_InitStruct.Pin = LED4_PIN;
-  HAL_GPIO_Init(LED4_GPIO_PORT, &GPIO_InitStruct);
-  /* Initialize BSP Led for LED3 */
-  BSP_LED_Init(LED3);
-	
-	WAKEUP_BUTTON_GPIO_CLK_ENABLE();
-	GPIO_InitStruct.Mode  = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull  = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-	
-	GPIO_InitStruct.Pin = GPIO_PIN_0;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-	TAMPER_BUTTON_GPIO_CLK_ENABLE();
-	GPIO_InitStruct.Mode  = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull  = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-	
-	GPIO_InitStruct.Pin = GPIO_PIN_13;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 	
 	/* Check TIM Init----------------------------------------------------------*/
 	if (HAL_TIM_Base_Start_IT(&htim1) != HAL_OK)
@@ -174,12 +134,6 @@ int main(void)
     printf("Timer Broken");
   }
   
-	/* Check UART Init----------------------------------------------------------*/
-	 if (HAL_UART_Init(&huart1) != HAL_OK)
-  {
-    /* Initialization Error */
-    printf("UART Broken");
-  }
 	/* Output a message on Hyperterminal using printf function */
   printf("\n\r UART Printf Example: retarget the C library printf function to the UART\n\r");
   printf("** Test finished successfully. ** \n\r");
@@ -468,6 +422,46 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
+  /* GPIO Config----------------------------------------------------------*/
+	LED1_GPIO_CLK_ENABLE();
+  LED2_GPIO_CLK_ENABLE();
+  LED3_GPIO_CLK_ENABLE();
+  LED4_GPIO_CLK_ENABLE();
+	
+	GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull  = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+
+	GPIO_InitStruct.Pin = LED1_PIN;
+  HAL_GPIO_Init(LED1_GPIO_PORT, &GPIO_InitStruct);
+
+  GPIO_InitStruct.Pin = LED2_PIN;
+  HAL_GPIO_Init(LED2_GPIO_PORT, &GPIO_InitStruct);
+
+  GPIO_InitStruct.Pin = LED3_PIN;
+  HAL_GPIO_Init(LED3_GPIO_PORT, &GPIO_InitStruct);
+
+  GPIO_InitStruct.Pin = LED4_PIN;
+  HAL_GPIO_Init(LED4_GPIO_PORT, &GPIO_InitStruct);
+  /* Initialize BSP Led for LED3 */
+  BSP_LED_Init(LED3);
+	
+	WAKEUP_BUTTON_GPIO_CLK_ENABLE();
+	GPIO_InitStruct.Mode  = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull  = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+	
+	GPIO_InitStruct.Pin = GPIO_PIN_0;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+	TAMPER_BUTTON_GPIO_CLK_ENABLE();
+	GPIO_InitStruct.Mode  = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull  = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+	
+	GPIO_InitStruct.Pin = GPIO_PIN_13;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 }
 
