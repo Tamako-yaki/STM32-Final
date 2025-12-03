@@ -99,6 +99,7 @@ void initGameState(DinoGameState *state) {
     state->jumpHeight = 0;
     state->isJumping = 0;
     state->jumpHangCounter = 0;
+    state->lives = 1;  // Default 1 life
     state->score = 0;
 }
 
@@ -241,3 +242,28 @@ void drawScore(unsigned int score, unsigned char x, unsigned char y) {
     }
 }
 
+// Draw "START" text in the middle of the LCD
+// ChineseTable indices: S=74, T=75, A=56, R=73, T=75
+void drawStartScreen(void) {
+    // "START" = 5 characters, each 8 pixels wide = 40 pixels
+    // LCD is 128 pixels wide, center at (128-40)/2 = 44
+    // Middle page is 3 or 4 (LCD has pages 0-7)
+    unsigned char startText[5] = {74, 75, 56, 73, 75};  // S, T, A, R, T
+    LCD_DrawString(3, 44, startText, 5);
+}
+
+// Clear the START text from the screen
+void clearStartScreen(void) {
+    unsigned char blank[5] = {22, 22, 22, 22, 22};  // Index 22 is blank
+    LCD_DrawString(3, 44, blank, 5);
+}
+
+// Update LEDs to show number of lives (1-4)
+void updateLivesLED(unsigned char lives) {
+    // LED1 = life 1, LED2 = life 2, etc.
+    // Turn ON LEDs for each life, OFF for the rest
+    HAL_GPIO_WritePin(LED1_GPIO_PORT, LED1_PIN, (lives >= 1) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LED2_GPIO_PORT, LED2_PIN, (lives >= 2) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LED3_GPIO_PORT, LED3_PIN, (lives >= 3) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LED4_GPIO_PORT, LED4_PIN, (lives >= 4) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+}

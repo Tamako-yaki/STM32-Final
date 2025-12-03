@@ -57,6 +57,7 @@ typedef struct {
     unsigned char jumpHeight;     // Current jump height
     unsigned char isJumping;      // Jump state flag
     unsigned char jumpHangCounter; // Counter for hang time at peak
+    unsigned char lives;          // Number of lives (1-4)
     unsigned int score;           // Current game score
 } DinoGameState;
 
@@ -80,5 +81,8 @@ void initGameState(DinoGameState *state);
 void handleJump(DinoGameState *state);
 void updateObstacle(Obstacle *obs);
 void drawScore(unsigned int score, unsigned char x, unsigned char y);
+void drawStartScreen(void);
+void clearStartScreen(void);
+void updateLivesLED(unsigned char lives);
 
 #endif /* __FUNCTION_H */

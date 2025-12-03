@@ -149,7 +149,44 @@ int main(void)
     obstacles[i].active = 0;
   }
   
-  // Draw initial game elements
+  // ===== START SCREEN: Select lives using ADC =====
+  drawStartScreen();
+  unsigned char selectedLives = 1;
+  updateLivesLED(selectedLives);
+  
+  // Wait for button press while reading ADC to select lives
+  while (HAL_GPIO_ReadPin(BUTTON_PORT, BUTTON_PIN) != GPIO_PIN_SET) {
+    // Read ADC value from variable resistor
+    HAL_ADC_Start(&hadc1);
+    HAL_ADC_PollForConversion(&hadc1, 100);
+    uint32_t adcValue = HAL_ADC_GetValue(&hadc1);
+    HAL_ADC_Stop(&hadc1);
+    
+    // Map ADC value (0-4095) to lives (1-4)
+    // 0-1023 = 1 life, 1024-2047 = 2 lives, 2048-3071 = 3 lives, 3072-4095 = 4 lives
+    if (adcValue < 1024) {
+      selectedLives = 1;
+    } else if (adcValue < 2048) {
+      selectedLives = 2;
+    } else if (adcValue < 3072) {
+      selectedLives = 3;
+    } else {
+      selectedLives = 4;
+    }
+    
+    // Update LEDs to show selected lives
+    updateLivesLED(selectedLives);
+    
+    HAL_Delay(50);  // Small delay to avoid flickering
+  }
+  
+  // Button pressed - start the game
+  HAL_Delay(200);  // Debounce
+  game.lives = selectedLives;
+  
+  // Clear start screen and draw game elements
+  clearStartScreen();
+  LCD_Clear();
   drawGroundLine(0);
   drawCloud(0, 20);   // Static cloud decoration at top
   drawCloud(0, 90);   // Another cloud at top
@@ -234,12 +271,25 @@ int main(void)
           unsigned char verticalOverlap = (game.dinoX >= obstacles[i].x - 1);
           
           if (horizontalOverlap && verticalOverlap) {
-            // Collision! Game Over
-            gameOver = 1;
+            // Collision! Lose a life
+            game.lives--;
+            updateLivesLED(game.lives);
+            
+            // Deactivate the obstacle that hit us
+            obstacles[i].active = 0;
+            clearSprite(obstacles[i].x, obstacles[i].y, 2);
+            
+            if (game.lives == 0) {
+              // No more lives - Game Over
+              gameOver = 1;
+            }
             break;
           }
         }
       }
+      
+      // Update lives display on LEDs
+      updateLivesLED(game.lives);
       
       // Increase game difficulty over time (not implemented)
       // Can decrease OBSTACLE_SPEED dynamically to make it faster
@@ -256,15 +306,47 @@ int main(void)
       if (buttonState == GPIO_PIN_SET) {
         HAL_Delay(500);  // Debounce
         
-        // Restart game
+        // Restart game - go back to start screen
         LCD_Clear();
         initGameState(&game);
         for (int i = 0; i < MAX_OBSTACLES; i++) {
           obstacles[i].active = 0;
         }
+        
+        // Show start screen again to select lives
+        drawStartScreen();
+        unsigned char selectedLives = 1;
+        updateLivesLED(selectedLives);
+        
+        // Wait for button press while reading ADC to select lives
+        HAL_Delay(300);  // Wait for button release
+        while (HAL_GPIO_ReadPin(BUTTON_PORT, BUTTON_PIN) != GPIO_PIN_SET) {
+          HAL_ADC_Start(&hadc1);
+          HAL_ADC_PollForConversion(&hadc1, 100);
+          uint32_t adcValue = HAL_ADC_GetValue(&hadc1);
+          HAL_ADC_Stop(&hadc1);
+          
+          if (adcValue < 1024) {
+            selectedLives = 1;
+          } else if (adcValue < 2048) {
+            selectedLives = 2;
+          } else if (adcValue < 3072) {
+            selectedLives = 3;
+          } else {
+            selectedLives = 4;
+          }
+          updateLivesLED(selectedLives);
+          HAL_Delay(50);
+        }
+        
+        HAL_Delay(200);  // Debounce
+        game.lives = selectedLives;
+        
+        clearStartScreen();
+        LCD_Clear();
         drawGroundLine(0);
-        drawCloud(1, 20);
-        drawCloud(2, 90);
+        drawCloud(0, 20);
+        drawCloud(0, 90);
         frameCount = 0;
         gameOver = 0;
       }
