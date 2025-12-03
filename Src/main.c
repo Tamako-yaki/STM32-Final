@@ -282,6 +282,7 @@ int main(void)
             if (game.lives == 0) {
               // No more lives - Game Over
               gameOver = 1;
+              drawEndScreen();  // Show END text
             }
             break;
           }
@@ -307,6 +308,7 @@ int main(void)
         HAL_Delay(500);  // Debounce
         
         // Restart game - go back to start screen
+        clearEndScreen();  // Clear END text
         LCD_Clear();
         initGameState(&game);
         for (int i = 0; i < MAX_OBSTACLES; i++) {

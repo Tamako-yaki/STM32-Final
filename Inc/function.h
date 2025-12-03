@@ -83,6 +83,8 @@ void updateObstacle(Obstacle *obs);
 void drawScore(unsigned int score, unsigned char x, unsigned char y);
 void drawStartScreen(void);
 void clearStartScreen(void);
+void drawEndScreen(void);
+void clearEndScreen(void);
 void updateLivesLED(unsigned char lives);
 
 #endif /* __FUNCTION_H */

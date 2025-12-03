@@ -258,6 +258,21 @@ void clearStartScreen(void) {
     LCD_DrawString(3, 44, blank, 5);
 }
 
+// Draw "END" text in the middle of the LCD
+// ChineseTable indices: E=60, N=69, D=59
+void drawEndScreen(void) {
+    // "END" = 3 characters, each 8 pixels wide = 24 pixels
+    // LCD is 128 pixels wide, center at (128-24)/2 = 52
+    unsigned char endText[3] = {60, 69, 59};  // E, N, D
+    LCD_DrawString(3, 52, endText, 3);
+}
+
+// Clear the END text from the screen
+void clearEndScreen(void) {
+    unsigned char blank[3] = {22, 22, 22};  // Index 22 is blank
+    LCD_DrawString(3, 52, blank, 3);
+}
+
 // Update LEDs to show number of lives (1-4)
 void updateLivesLED(unsigned char lives) {
     // LED1 = life 1, LED2 = life 2, etc.
