@@ -217,7 +217,7 @@ int main(void)
   LCD_Clear();
   drawGroundLine(0);
   drawStar(0, 20);   // Static star decoration at top
-  drawStar(0, 90);   // Another star at top
+  drawMoon(0, 90);   // Moon decoration at top
   
   unsigned int frameCount = 0;
   unsigned int obstacleFrameCounter = 0;
@@ -394,7 +394,7 @@ int main(void)
         LCD_Clear();
         drawGroundLine(0);
         drawStar(0, 20);
-        drawStar(0, 90);
+        drawMoon(0, 90);
         frameCount = 0;
         nextObstacleSpawn = 10;  // First obstacle spawns quickly after restart
         gameOver = 0;

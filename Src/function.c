@@ -176,6 +176,12 @@ void drawStar(unsigned char x, unsigned char y) {
     LCD_DrawString(x, y, sprite, 2);
 }
 
+// Draw a moon decoration
+void drawMoon(unsigned char x, unsigned char y) {
+    unsigned char sprite[2] = {SPRITE_MOON, SPRITE_MOON + 1};
+    LCD_DrawString(x, y, sprite, 2);
+}
+
 // Draw ground line
 void drawGroundLine(unsigned char y) {
     // Draw a continuous line across the entire width at GROUND_PAGE

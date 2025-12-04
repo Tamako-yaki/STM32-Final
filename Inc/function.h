@@ -41,6 +41,7 @@
 #define SPRITE_DINO_DEAD     131  // Dino dead sprite (16x16) - indices 131-132
 #define SPRITE_CLEAR         133  // Clear sprite (16x16) - indices 133-134
 #define SPRITE_GROUND_LINE   136  // Ground line (8x16) - index 136 has the line pixels
+#define SPRITE_MOON          139  // Moon decoration (16x16) - indices 139-140
 
 // Game constants
 #define GROUND_PAGE          7    // The page/row where ground is drawn (bottom of LCD)
@@ -91,6 +92,7 @@ void drawDinoDead(DinoGameState *state);  // Draw dead dino sprite
 void updateDinoAnimation(DinoGameState *state);
 void drawCactus(unsigned char x, unsigned char y, unsigned char type);
 void drawStar(unsigned char x, unsigned char y);
+void drawMoon(unsigned char x, unsigned char y);
 void drawGroundLine(unsigned char y);
 void clearSprite(unsigned char x, unsigned char y, unsigned char width);
 void initGameState(DinoGameState *state);
