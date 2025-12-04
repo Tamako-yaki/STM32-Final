@@ -102,7 +102,7 @@ void Error_Handler(void);
 /* USER CODE BEGIN 0 */
 
 // Game variables
-#define MAX_OBSTACLES 1  // Single obstacle, evenly spaced spawning
+#define MAX_OBSTACLES 3  // Allow multiple obstacles on screen simultaneously
 #define BUTTON_PIN GPIO_PIN_0  // Change to your actual button pin
 #define BUTTON_PORT GPIOA      // Change to your actual button port
 
@@ -123,10 +123,11 @@ unsigned int getRandomSpawnInterval(void) {
 }
 
 unsigned char getRandomObstacleType(void) {
-  // Update random seed
-  randomSeed = (randomSeed * 1103515245 + 12345) & 0x7FFFFFFF;
+  // Update random seed with additional entropy from system tick
+  randomSeed = (randomSeed * 1103515245 + 12345 + HAL_GetTick()) & 0x7FFFFFFF;
   // 50% chance for big cactus (type 0), 50% for small cactus (type 1)
-  return (randomSeed % 2);
+  // Use higher bits which have better randomness in LCG
+  return ((randomSeed >> 16) % 2);
 }
 
 /* USER CODE END 0 */
@@ -206,7 +207,7 @@ int main(void)
   HAL_ADC_PollForConversion(&hadc1, 100);
   randomSeed = HAL_ADC_GetValue(&hadc1) + HAL_GetTick();
   HAL_ADC_Stop(&hadc1);
-  nextObstacleSpawn = getRandomSpawnInterval();  // Set initial random spawn time
+  nextObstacleSpawn = 10;  // First obstacle spawns quickly after game start
   
   printf("\r\n=== GAME START ===\r\n");
   printf("Lives: %d\r\n", game.lives);
@@ -395,7 +396,7 @@ int main(void)
         drawStar(0, 20);
         drawStar(0, 90);
         frameCount = 0;
-        nextObstacleSpawn = getRandomSpawnInterval();  // Reset spawn timing with random interval
+        nextObstacleSpawn = 10;  // First obstacle spawns quickly after restart
         gameOver = 0;
       }
     }
