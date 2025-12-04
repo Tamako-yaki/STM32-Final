@@ -46,7 +46,14 @@
 #define DINO_GROUND_Y        64   // Dino's Y position when on ground
 #define JUMP_MAX_HEIGHT      3    // Maximum jump height in pages
 #define JUMP_HANG_TIME       8    // Frames to stay at jump peak (makes jump longer)
-#define OBSTACLE_SPEED       3    // Frames between obstacle movements (lower = faster)
+#define OBSTACLE_SPEED_INIT  5    // Initial frames between obstacle movements (higher = slower)
+#define OBSTACLE_SPEED_MIN   1    // Minimum obstacle speed (fastest)
+#define SPEED_INCREASE_RATE  500  // Frames between speed increases
+
+// PWM Timer period constants (lower = faster game)
+#define TIMER_PERIOD_INIT    100  // Initial timer period (~10ms)
+#define TIMER_PERIOD_MIN     40   // Minimum timer period (~4ms, fastest)
+#define TIMER_SPEED_STEP     5    // How much to decrease period each speed increase
 
 // Game state and animation variables
 typedef struct {
@@ -59,6 +66,8 @@ typedef struct {
     unsigned char jumpHangCounter; // Counter for hang time at peak
     unsigned char lives;          // Number of lives (1-4)
     unsigned int score;           // Current game score
+    unsigned char currentSpeed;   // Current obstacle speed (frames between moves)
+    unsigned int speedTimer;      // Timer for speed increases
 } DinoGameState;
 
 // Obstacle structure
@@ -86,5 +95,6 @@ void clearStartScreen(void);
 void drawEndScreen(void);
 void clearEndScreen(void);
 void updateLivesLED(unsigned char lives);
+void updateGameSpeed(DinoGameState *state);  // PWM-based speed control
 
 #endif /* __FUNCTION_H */

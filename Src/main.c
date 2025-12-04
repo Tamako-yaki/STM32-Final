@@ -233,9 +233,9 @@ int main(void)
         }
       }
       
-      // Update and draw obstacles at fixed speed
+      // Update and draw obstacles at dynamic speed
       obstacleFrameCounter++;
-      if (obstacleFrameCounter >= OBSTACLE_SPEED) {
+      if (obstacleFrameCounter >= game.currentSpeed) {
         obstacleFrameCounter = 0;
         
         for (int i = 0; i < MAX_OBSTACLES; i++) {
@@ -292,8 +292,8 @@ int main(void)
       // Update lives display on LEDs
       updateLivesLED(game.lives);
       
-      // Increase game difficulty over time (not implemented)
-      // Can decrease OBSTACLE_SPEED dynamically to make it faster
+      // Increase game difficulty over time using PWM
+      updateGameSpeed(&game);
       
       // Wait for timer interrupt to trigger next frame
       while (!gameTimerFlag) {
@@ -343,6 +343,9 @@ int main(void)
         
         HAL_Delay(200);  // Debounce
         game.lives = selectedLives;
+        
+        // Reset timer period to initial speed
+        __HAL_TIM_SET_AUTORELOAD(&htim1, TIMER_PERIOD_INIT);
         
         clearStartScreen();
         LCD_Clear();
@@ -467,7 +470,7 @@ void MX_TIM1_Init(void)
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 7200;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 100;  // ~10ms per frame (100 FPS) for smoother animation
+  htim1.Init.Period = TIMER_PERIOD_INIT;  // Initial ~10ms per frame, decreases over time for speed increase
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   HAL_TIM_Base_Init(&htim1);
