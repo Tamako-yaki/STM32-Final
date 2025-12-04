@@ -277,8 +277,8 @@ void clearEndScreen(void) {
 void updateLivesLED(unsigned char lives) {
     // LED1 = life 1, LED2 = life 2, etc.
     // Turn ON LEDs for each life, OFF for the rest
-    HAL_GPIO_WritePin(LED1_GPIO_PORT, LED1_PIN, (lives >= 1) ? 1 : 0);
-    HAL_GPIO_WritePin(LED2_GPIO_PORT, LED2_PIN, (lives >= 2) ? 1 : 0);
-    HAL_GPIO_WritePin(LED3_GPIO_PORT, LED3_PIN, (lives >= 3) ? 1 : 0);
-    HAL_GPIO_WritePin(LED4_GPIO_PORT, LED4_PIN, (lives >= 4) ? 1 : 0);
+    HAL_GPIO_WritePin(LED4_GPIO_PORT, LED4_PIN, (lives >= 1) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LED3_GPIO_PORT, LED3_PIN, (lives >= 2) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LED2_GPIO_PORT, LED2_PIN, (lives >= 3) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LED1_GPIO_PORT, LED1_PIN, (lives >= 4) ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
