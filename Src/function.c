@@ -70,26 +70,6 @@
 #include "lcd.h"
 #include "string.h"
 
-// Original jump function
-void jump(unsigned char *a, unsigned char *b) {
-    // Move from position 5 to 1 (decreasing)
-    for (int j = 5; j >= 1; j--) {
-        LCD_DrawString(j, 10, a, strlen(a));  // Draw string a at position j
-        HAL_Delay(50);  // Delay for animation effect
-        LCD_DrawString(j, 10, b, strlen(b));  // Draw string b at position j
-    }
-    
-    // Move from position 1 to 5 (increasing)
-    for (int j = 1; j <= 5; j++) {
-        LCD_DrawString(j, 10, a, strlen(a));  // Draw string a at position j
-        HAL_Delay(50);  // Delay for animation effect
-        LCD_DrawString(j, 10, b, strlen(b));  // Draw string b at position j
-    }
-    
-    // Final position at 5 for string a
-    LCD_DrawString(5, 10, a, strlen(a));  
-}
-
 // Initialize game state
 void initGameState(DinoGameState *state) {
     state->dinoX = GROUND_PAGE - 2; // Start 2 page above ground (page 6)

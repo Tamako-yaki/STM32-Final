@@ -79,7 +79,6 @@ typedef struct {
 } Obstacle;
 
 // Game functions
-void jump(unsigned char *a, unsigned char *b);
 void drawDino(DinoGameState *state);
 void updateDinoAnimation(DinoGameState *state);
 void drawCactus(unsigned char x, unsigned char y, unsigned char type);
