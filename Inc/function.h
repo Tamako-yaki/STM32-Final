@@ -32,14 +32,14 @@
 
 // Game sprite indices in ChineseTable (8x16 format)
 // 16x16 sprites use 32 bytes (first 16 = left half, next 16 = right half)
-#define SPRITE_CACTUS_BIG    120  // Big cactus (16x16)
+#define SPRITE_CACTUS_BIG    120  // Big cactus (16x16) - indices 120-121
 #define SPRITE_CACTUS_SMALL  122  // Small cactus (8x16)
-#define SPRITE_CLOUD         123  // Cloud decoration (16x16)
+#define SPRITE_CLOUD         123  // Cloud decoration (16x16) - indices 123-124
 #define SPRITE_DINO_STAND    125  // Dino standing/jumping (16x16) - indices 125-126
 #define SPRITE_DINO_RUN      127  // Dino running frame 1 (16x16) - indices 127-128
-#define SPRITE_CLEAR         129  // Clear sprite (16x16) - indices 129-130
-#define SPRITE_GROUND_LINE   131  // Ground line (16x16) - indices 131-132
-#define SPRITE_DINO_RUN_2    133  // Dino running frame 2 (16x16) - indices 133-134
+#define SPRITE_DINO_RUN_2    129  // Dino running frame 2 (16x16) - indices 129-130
+#define SPRITE_CLEAR         131  // Clear sprite (16x16) - indices 131-132
+#define SPRITE_GROUND_LINE   134  // Ground line (8x16) - index 134 has the line pixels
 
 // Game constants
 #define GROUND_PAGE          7    // The page/row where ground is drawn (bottom of LCD)
