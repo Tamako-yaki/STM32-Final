@@ -262,7 +262,7 @@ int main(void)
   LCD_Clear();
   drawGroundLine(0);
   drawStar(0, 20);   // Static star decoration at top
-  drawMoon(0, 90);   // Moon decoration at top
+  drawMoon(0, 50);   // Moon decoration at top
   drawGameScore(0);  // Initialize score display at 0
   
   unsigned int frameCount = 0;
