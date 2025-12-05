@@ -241,6 +241,27 @@ void drawScore(unsigned int score, unsigned char x, unsigned char y) {
     }
 }
 
+// Draw game score in upper right corner of LCD
+// LCD is 128 pixels wide, score at page 0 (top), right-aligned
+void drawGameScore(unsigned int score) {
+    // First clear the score area (up to 5 digits = 40 pixels)
+    unsigned char blank[5] = {22, 22, 22, 22, 22};  // Index 22 is blank
+    LCD_DrawString(0, 88, blank, 5);  // Clear from column 88 to 128
+    
+    // Draw score right-aligned at upper right
+    // Calculate starting position based on number of digits
+    unsigned char numDigits = 1;
+    unsigned int temp = score;
+    while (temp >= 10 && numDigits < 5) {
+        temp /= 10;
+        numDigits++;
+    }
+    
+    // Position: 128 - (numDigits * 8) for right alignment
+    unsigned char startY = 128 - (numDigits * 8);
+    drawScore(score, 0, startY);
+}
+
 // Draw "START" text in the middle of the LCD
 // ChineseTable indices: S=74, T=75, A=56, R=73, T=75
 void drawStartScreen(void) {

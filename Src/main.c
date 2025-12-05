@@ -263,6 +263,7 @@ int main(void)
   drawGroundLine(0);
   drawStar(0, 20);   // Static star decoration at top
   drawMoon(0, 90);   // Moon decoration at top
+  drawGameScore(0);  // Initialize score display at 0
   
   unsigned int frameCount = 0;
   unsigned int obstacleFrameCounter = 0;
@@ -361,6 +362,7 @@ int main(void)
               obstacles[i].active = 0;
               // Increase score and print to UART
               game.score++;
+              drawGameScore(game.score);  // Update score display on LCD
               UART_SendString("Score: ");
               UART_SendNumber(game.score);
               UART_SendString("\r\n");
@@ -499,6 +501,7 @@ int main(void)
         drawGroundLine(0);
         drawStar(0, 20);
         drawMoon(0, 90);
+        drawGameScore(0);  // Initialize score display at 0
         frameCount = 0;
         nextObstacleSpawn = 10;  // First obstacle spawns quickly after restart
         gameOver = 0;

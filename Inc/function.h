@@ -110,6 +110,7 @@ void initGameState(DinoGameState *state);
 void handleJump(DinoGameState *state);
 void updateObstacle(Obstacle *obs);
 void drawScore(unsigned int score, unsigned char x, unsigned char y);
+void drawGameScore(unsigned int score);  // Draw score in upper right corner
 void drawStartScreen(void);
 void clearStartScreen(void);
 void drawEndScreen(void);
