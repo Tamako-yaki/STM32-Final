@@ -104,8 +104,10 @@ void Error_Handler(void);
 
 // Game variables
 #define MAX_OBSTACLES 3  // Allow multiple obstacles on screen simultaneously
-#define BUTTON_PIN GPIO_PIN_0  // Change to your actual button pin
-#define BUTTON_PORT GPIOA      // Change to your actual button port
+#define BUTTON_PIN GPIO_PIN_0  // Jump button (WAKEUP)
+#define BUTTON_PORT GPIOA      // Jump button port
+#define CROUCH_BUTTON_PIN GPIO_PIN_13  // Crouch button (TAMPER)
+#define CROUCH_BUTTON_PORT GPIOC       // Crouch button port
 
 // Timer-based frame control
 extern volatile unsigned char gameTimerFlag;
@@ -126,9 +128,9 @@ unsigned int getRandomSpawnInterval(void) {
 unsigned char getRandomObstacleType(void) {
   // Update random seed with additional entropy from system tick
   randomSeed = (randomSeed * 1103515245 + 12345 + HAL_GetTick()) & 0x7FFFFFFF;
-  // 33% chance for each: big cactus (0), small cactus (1), bird (2)
+  // 25% chance for each: big cactus (0), small cactus (1), high bird (2), low bird (3)
   // Use higher bits which have better randomness in LCG
-  return ((randomSeed >> 16) % 3);
+  return ((randomSeed >> 16) % 4);
 }
 
 // Simple UART send functions using HAL directly (no printf dependency)
@@ -277,11 +279,19 @@ int main(void)
       GPIO_PinState buttonState = HAL_GPIO_ReadPin(BUTTON_PORT, BUTTON_PIN);
       if (buttonState == GPIO_PIN_SET) {
         game.buttonHeld = 1;  // Track button is being held
-        if (!game.isJumping && game.jumpHeight == 0) {
+        if (!game.isJumping && game.jumpHeight == 0 && !game.isCrouching) {
           game.isJumping = 1;
         }
       } else {
         game.buttonHeld = 0;  // Button released
+      }
+      
+      // Check for crouch button (TAMPER button - active LOW with pull-up)
+      GPIO_PinState crouchState = HAL_GPIO_ReadPin(CROUCH_BUTTON_PORT, CROUCH_BUTTON_PIN);
+      if (crouchState == GPIO_PIN_RESET && !game.isJumping && game.jumpHeight == 0) {
+        game.isCrouching = 1;
+      } else {
+        game.isCrouching = 0;
       }
       
       // Update dino physics
@@ -298,14 +308,17 @@ int main(void)
       if (frameCount >= nextObstacleSpawn) {
         for (int i = 0; i < MAX_OBSTACLES; i++) {
           if (!obstacles[i].active) {
-            obstacles[i].type = getRandomObstacleType();  // Random: 0=big, 1=small cactus, 2=bird
+            obstacles[i].type = getRandomObstacleType();  // Random: 0=big, 1=small, 2=high bird, 3=low bird
             obstacles[i].y = 120;  // Start from right side
             obstacles[i].animFrame = 0;  // Reset animation frame
             
             // Set height based on obstacle type
             if (obstacles[i].type == 2) {
-              // Bird flies above dino's head
+              // High bird - flies above dino, must NOT jump
               obstacles[i].x = BIRD_FLIGHT_PAGE;
+            } else if (obstacles[i].type == 3) {
+              // Low bird - flies at head level, must CROUCH
+              obstacles[i].x = BIRD_LOW_FLIGHT_PAGE;
             } else {
               // Cactus on ground
               obstacles[i].x = GROUND_PAGE - 2;  // 2 pages above ground
@@ -335,8 +348,8 @@ int main(void)
               obstacles[i].animFrame++;  // Update animation frame
             
               // Draw at new position based on type
-              if (obstacles[i].type == 2) {
-                // Bird with animation
+              if (obstacles[i].type == 2 || obstacles[i].type == 3) {
+                // Bird with animation (both high and low birds)
                 drawBird(obstacles[i].x, obstacles[i].y, obstacles[i].animFrame);
               } else {
                 // Cactus
@@ -365,15 +378,20 @@ int main(void)
           unsigned char collision = 0;
           
           if (obstacles[i].type == 2) {
-            // Bird collision: only hits dino if dino is jumping (in the air)
-            // Bird is at BIRD_FLIGHT_PAGE (4), dino jumps from page 5 upward
-            // Collision if dino's page (dinoX) is at or above bird level
+            // High bird collision: only hits dino if dino is jumping (in the air)
+            // Stay on ground to avoid!
             if (horizontalOverlap && game.dinoX <= BIRD_FLIGHT_PAGE + 1) {
+              collision = 1;
+            }
+          } else if (obstacles[i].type == 3) {
+            // Low bird collision: hits dino unless crouching
+            // Crouch to avoid!
+            if (horizontalOverlap && !game.isCrouching && game.dinoX >= BIRD_LOW_FLIGHT_PAGE - 1) {
               collision = 1;
             }
           } else {
             // Cactus collision: only hits dino if dino is on ground (not jumping high enough)
-            // Check vertical overlap (X axis = page/vertical, lower X = higher on screen)
+            // Jump to avoid!
             unsigned char verticalOverlap = (game.dinoX >= obstacles[i].x - 1);
             if (horizontalOverlap && verticalOverlap) {
               collision = 1;

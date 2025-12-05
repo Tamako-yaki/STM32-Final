@@ -78,6 +78,7 @@ void initGameState(DinoGameState *state) {
     state->animFrame = 0;
     state->jumpHeight = 0;
     state->isJumping = 0;
+    state->isCrouching = 0;
     state->jumpHangCounter = 0;
     state->buttonHeld = 0;  // Button not held initially
     state->lives = 1;  // Default 1 life
@@ -92,7 +93,11 @@ void drawDino(DinoGameState *state) {
     
     // Select sprite based on state
     // 16x16 sprites use 2 consecutive indices (e.g., 125 and 126)
-    if (state->isJumping) {
+    if (state->isCrouching) {
+        // Crouching sprite
+        sprite[0] = SPRITE_DINO_CROUCH;      // Index 144
+        sprite[1] = SPRITE_DINO_CROUCH + 1;  // Index 145
+    } else if (state->isJumping) {
         sprite[0] = SPRITE_DINO_STAND;      // Index 125
         sprite[1] = SPRITE_DINO_STAND + 1;  // Index 126
     } else {
@@ -101,8 +106,8 @@ void drawDino(DinoGameState *state) {
             sprite[0] = SPRITE_DINO_RUN;      // Index 127
             sprite[1] = SPRITE_DINO_RUN + 1;  // Index 128
         } else {
-            sprite[0] = SPRITE_DINO_RUN_2;      // Index 133
-            sprite[1] = SPRITE_DINO_RUN_2 + 1;  // Index 134
+            sprite[0] = SPRITE_DINO_RUN_2;      // Index 129
+            sprite[1] = SPRITE_DINO_RUN_2 + 1;  // Index 130
         }
     }
     

@@ -45,9 +45,11 @@
 #define SPRITE_BIRD_FLY_1    138  // Flying bird frame 1 (16x16) - indices 138-139
 #define SPRITE_BIRD_FLY_2    140  // Flying bird frame 2 (16x16) - indices 140-141
 #define SPRITE_DINO_HIT      142  // Dino hit sprite (16x16) - indices 142-143
+#define SPRITE_DINO_CROUCH   144  // Dino crouch sprite (16x16) - indices 144-145
 
-// Bird flight height (page number - lower = higher on screen)
-#define BIRD_FLIGHT_PAGE     4    // Bird flies at page 4, dino is at page 5 when on ground
+// Bird flight heights (page number - lower = higher on screen)
+#define BIRD_FLIGHT_PAGE     3    // High bird flies at page 3, must NOT jump to avoid
+#define BIRD_LOW_FLIGHT_PAGE 5    // Low bird flies at page 5, must CROUCH to avoid
 
 // Game constants
 #define GROUND_PAGE          7    // The page/row where ground is drawn (bottom of LCD)
@@ -74,6 +76,7 @@ typedef struct {
     unsigned char animFrame;      // Animation frame counter
     unsigned char jumpHeight;     // Current jump height
     unsigned char isJumping;      // Jump state flag
+    unsigned char isCrouching;    // Crouch state flag
     unsigned char jumpHangCounter; // Counter for hang time at peak
     unsigned char buttonHeld;     // Whether jump button is being held
     unsigned char lives;          // Number of lives (1-4)
@@ -86,7 +89,7 @@ typedef struct {
 typedef struct {
     unsigned char x;              // X position (page)
     unsigned char y;              // Y position (column)
-    unsigned char type;           // 0=cactus big, 1=cactus small, 2=bird
+    unsigned char type;           // 0=cactus big, 1=cactus small, 2=bird high, 3=bird low
     unsigned char active;         // Is obstacle active
     unsigned char animFrame;      // Animation frame for bird
 } Obstacle;
