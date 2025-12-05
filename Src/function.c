@@ -95,7 +95,21 @@ void updateDinoAnimation(DinoGameState *state) {
 
 // Handle jump mechanics with level-triggered hang time
 // Holding button longer at peak increases hang time (up to max)
+// Pressing crouch during jump will cancel and fall immediately
 void handleJump(DinoGameState *state) {
+    // Check if crouch button pressed during jump - cancel jump and fall
+    if (state->isCrouching && (state->isJumping || state->jumpHeight > 0)) {
+        state->isJumping = 0;
+        state->jumpHangCounter = 0;
+        // Don't set isCrouching to 0 here - let the main loop handle it
+        // Just start falling immediately
+        if (state->jumpHeight > 0) {
+            state->jumpHeight--;
+            state->dinoX++;  // Move down one page
+        }
+        return;
+    }
+    
     if (state->isJumping) {
         // Going up
         if (state->jumpHeight < JUMP_MAX_HEIGHT) {
