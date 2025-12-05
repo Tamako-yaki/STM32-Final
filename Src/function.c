@@ -118,6 +118,14 @@ void drawDinoDead(DinoGameState *state) {
     LCD_DrawString(state->dinoX, state->dinoY, sprite, 2);
 }
 
+// Draw dino hit sprite at current position (when losing a life but not dead)
+void drawDinoHit(DinoGameState *state) {
+    unsigned char sprite[2];
+    sprite[0] = SPRITE_DINO_HIT;      // Index 142
+    sprite[1] = SPRITE_DINO_HIT + 1;  // Index 143
+    LCD_DrawString(state->dinoX, state->dinoY, sprite, 2);
+}
+
 // Update dino animation frame
 void updateDinoAnimation(DinoGameState *state) {
     state->animFrame++;

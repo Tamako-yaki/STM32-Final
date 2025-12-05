@@ -388,6 +388,12 @@ int main(void)
             UART_SendString("\r\n");
             updateLivesLED(game.lives);
             
+            // Draw hit sprite to show collision
+            clearSprite(game.dinoX, game.dinoY, 2);
+            drawDinoHit(&game);
+            HAL_Delay(300);  // Brief pause to show hit sprite
+            clearSprite(game.dinoX, game.dinoY, 2);
+            
             // Deactivate the obstacle that hit us
             obstacles[i].active = 0;
             clearSprite(obstacles[i].x, obstacles[i].y, 2);

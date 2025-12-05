@@ -44,6 +44,7 @@
 #define SPRITE_MOON          136  // Moon decoration (16x16) - indices 136-137
 #define SPRITE_BIRD_FLY_1    138  // Flying bird frame 1 (16x16) - indices 138-139
 #define SPRITE_BIRD_FLY_2    140  // Flying bird frame 2 (16x16) - indices 140-141
+#define SPRITE_DINO_HIT      142  // Dino hit sprite (16x16) - indices 142-143
 
 // Bird flight height (page number - lower = higher on screen)
 #define BIRD_FLIGHT_PAGE     4    // Bird flies at page 4, dino is at page 5 when on ground
@@ -93,6 +94,7 @@ typedef struct {
 // Game functions
 void drawDino(DinoGameState *state);
 void drawDinoDead(DinoGameState *state);  // Draw dead dino sprite
+void drawDinoHit(DinoGameState *state);   // Draw dino hit sprite (when losing a life)
 void updateDinoAnimation(DinoGameState *state);
 void drawCactus(unsigned char x, unsigned char y, unsigned char type);
 void drawBird(unsigned char x, unsigned char y, unsigned char animFrame);  // Draw animated bird
