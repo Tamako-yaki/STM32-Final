@@ -66,6 +66,7 @@
 #include "main.h"
 #include "function.h"
 #include "lcd.h"
+#include <string.h>
 
 /** @addtogroup STM32F1xx_HAL_Examples
   * @{
@@ -130,6 +131,46 @@ unsigned char getRandomObstacleType(void) {
   return ((randomSeed >> 16) % 2);
 }
 
+// Simple UART send functions using HAL directly (no printf dependency)
+void UART_SendString(const char *str) {
+  HAL_UART_Transmit(&huart1, (uint8_t *)str, strlen(str), 1000);
+}
+
+void UART_SendNumber(int num) {
+  char buffer[12];
+  int i = 0;
+  int isNegative = 0;
+  
+  if (num < 0) {
+    isNegative = 1;
+    num = -num;
+  }
+  
+  // Handle 0 case
+  if (num == 0) {
+    buffer[i++] = '0';
+  } else {
+    // Extract digits in reverse
+    while (num > 0) {
+      buffer[i++] = '0' + (num % 10);
+      num /= 10;
+    }
+  }
+  
+  if (isNegative) {
+    buffer[i++] = '-';
+  }
+  
+  // Reverse the buffer
+  for (int j = 0; j < i / 2; j++) {
+    char temp = buffer[j];
+    buffer[j] = buffer[i - 1 - j];
+    buffer[i - 1 - j] = temp;
+  }
+  
+  HAL_UART_Transmit(&huart1, (uint8_t *)buffer, i, 1000);
+}
+
 /* USER CODE END 0 */
 
 int main(void)
@@ -149,12 +190,12 @@ int main(void)
 	if (HAL_TIM_Base_Start_IT(&htim1) != HAL_OK)
   {
     /* Initialization Error */
-    printf("Timer Broken");
+    UART_SendString("Timer Broken\r\n");
   }
   
-	/* Output a message on Hyperterminal using printf function */
-  printf("\n\r UART Printf Example: retarget the C library printf function to the UART\n\r");
-  printf("** Test finished successfully. ** \n\r");
+	/* Output a message on Hyperterminal using direct UART */
+  UART_SendString("\r\n UART Direct Test - HAL_UART_Transmit\r\n");
+  UART_SendString("** Test finished successfully. **\r\n");
 
 	/* -------------------------------MAIN PROGRAM-----------------------------*/
   
@@ -209,8 +250,10 @@ int main(void)
   HAL_ADC_Stop(&hadc1);
   nextObstacleSpawn = 10;  // First obstacle spawns quickly after game start
   
-  printf("\r\n=== GAME START ===\r\n");
-  printf("Lives: %d\r\n", game.lives);
+  UART_SendString("\r\n=== GAME START ===\r\n");
+  UART_SendString("Lives: ");
+  UART_SendNumber(game.lives);
+  UART_SendString("\r\n");
   
   // Clear start screen and draw game elements
   clearStartScreen();
@@ -287,7 +330,9 @@ int main(void)
               obstacles[i].active = 0;
               // Increase score and print to UART
               game.score++;
-              printf("Score: %d\r\n", game.score);
+              UART_SendString("Score: ");
+              UART_SendNumber(game.score);
+              UART_SendString("\r\n");
             }
           }
         }
@@ -307,7 +352,9 @@ int main(void)
           if (horizontalOverlap && verticalOverlap) {
             // Collision! Lose a life
             game.lives--;
-            printf("Hit! Lives remaining: %d\r\n", game.lives);
+            UART_SendString("Hit! Lives remaining: ");
+            UART_SendNumber(game.lives);
+            UART_SendString("\r\n");
             updateLivesLED(game.lives);
             
             // Deactivate the obstacle that hit us
@@ -317,8 +364,10 @@ int main(void)
             if (game.lives == 0) {
               // No more lives - Game Over
               gameOver = 1;
-              printf("\r\n=== GAME OVER ===\r\n");
-              printf("Final Score: %d\r\n", game.score);
+              UART_SendString("\r\n=== GAME OVER ===\r\n");
+              UART_SendString("Final Score: ");
+              UART_SendNumber(game.score);
+              UART_SendString("\r\n");
               
               // Draw dead dino sprite at collision position
               drawDinoDead(&game);
@@ -384,8 +433,10 @@ int main(void)
         
         HAL_Delay(200);  // Debounce
         game.lives = selectedLives;
-        printf("\r\n=== GAME RESTART ===\r\n");
-        printf("Lives: %d\r\n", game.lives);
+        UART_SendString("\r\n=== GAME RESTART ===\r\n");
+        UART_SendString("Lives: ");
+        UART_SendNumber(game.lives);
+        UART_SendString("\r\n");
         
         // Reset timer period to initial speed
         __HAL_TIM_SET_AUTORELOAD(&htim1, TIMER_PERIOD_INIT);
