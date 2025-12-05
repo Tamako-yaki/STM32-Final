@@ -21,14 +21,15 @@
 
 // Initialize game state
 void initGameState(DinoGameState *state) {
-    state->dinoX = GROUND_PAGE - 2; // Start 2 page above ground (page 6)
+    state->dinoX = GROUND_PAGE - 2; // Start 2 page above ground (page 5)
     state->dinoY = 8;  // Leftmost position
     state->dinoState = 0;  // Running
     state->animFrame = 0;
     state->jumpHeight = 0;
     state->isJumping = 0;
     state->isCrouching = 0;
-    state->jumpHangCounter = 0;
+    state->jumpVelocity = 0;
+    state->jumpFrameCounter = 0;
     state->buttonHeld = 0;  // Button not held initially
     state->lives = 1;  // Default 1 life
     state->score = 0;
@@ -93,14 +94,15 @@ void updateDinoAnimation(DinoGameState *state) {
     }
 }
 
-// Handle jump mechanics with level-triggered hang time
-// Holding button longer at peak increases hang time (up to max)
+// Handle jump mechanics with smooth velocity-based animation
+// Uses velocity that decreases going up (deceleration) and increases going down (gravity)
 // Pressing crouch during jump will cancel and fall immediately (fast-fall)
 void handleJump(DinoGameState *state) {
     // Check if crouch button pressed during jump - fast-fall immediately
     if (state->isCrouching && (state->isJumping || state->jumpHeight > 0)) {
         state->isJumping = 0;
-        state->jumpHangCounter = 0;
+        state->jumpVelocity = 0;
+        state->jumpFrameCounter = 0;
         // Fast-fall: drop all remaining height at once
         while (state->jumpHeight > 0) {
             state->jumpHeight--;
@@ -109,29 +111,60 @@ void handleJump(DinoGameState *state) {
         return;
     }
     
-    if (state->isJumping) {
-        // Going up
-        if (state->jumpHeight < JUMP_MAX_HEIGHT) {
-            state->jumpHeight++;
-            state->dinoX--;  // Move up one page
-        } else {
-            // At peak - hang in the air
-            state->jumpHangCounter++;
+    // Start jump with initial velocity
+    if (state->isJumping && state->jumpVelocity == 0 && state->jumpHeight == 0) {
+        state->jumpVelocity = JUMP_INITIAL_VELOCITY;
+        state->jumpFrameCounter = 0;
+    }
+    
+    // Process jump physics
+    if (state->jumpVelocity > 0) {
+        // Going up - move every (5 - velocity) frames for variable speed
+        // Higher velocity = move more frequently (faster)
+        state->jumpFrameCounter++;
+        unsigned char framesPerMove = 6 - state->jumpVelocity;
+        if (framesPerMove < 1) framesPerMove = 1;
+        
+        if (state->jumpFrameCounter >= framesPerMove) {
+            state->jumpFrameCounter = 0;
+            if (state->jumpHeight < JUMP_MAX_HEIGHT) {
+                state->jumpHeight++;
+                state->dinoX--;  // Move up one page
+            }
+            // Apply gravity - reduce upward velocity
+            state->jumpVelocity -= JUMP_GRAVITY;
             
-            // Determine hang time based on button state
-            // If button held, allow hanging up to max time
-            // If button released, use minimum hang time
-            unsigned char hangTimeLimit = state->buttonHeld ? JUMP_HANG_TIME_MAX : JUMP_HANG_TIME_MIN;
-            
-            if (state->jumpHangCounter >= hangTimeLimit) {
+            // If velocity becomes 0 or negative, start falling
+            if (state->jumpVelocity <= 0) {
                 state->isJumping = 0;
-                state->jumpHangCounter = 0;
+                state->jumpVelocity = -1;  // Start falling slowly
             }
         }
-    } else if (state->jumpHeight > 0) {
-        // Coming down
-        state->jumpHeight--;
-        state->dinoX++;  // Move down one page
+    } else if (state->jumpVelocity < 0 || (state->jumpHeight > 0 && !state->isJumping)) {
+        // Falling down - accelerate with gravity
+        if (state->jumpVelocity == 0) state->jumpVelocity = -1;
+        
+        state->jumpFrameCounter++;
+        // Falling speed increases (velocity becomes more negative)
+        unsigned char framesPerMove = 5 + state->jumpVelocity;  // velocity is negative, so this decreases
+        if (framesPerMove < 1) framesPerMove = 1;
+        if (framesPerMove > 4) framesPerMove = 4;  // Cap slowest fall speed
+        
+        if (state->jumpFrameCounter >= framesPerMove) {
+            state->jumpFrameCounter = 0;
+            if (state->jumpHeight > 0) {
+                state->jumpHeight--;
+                state->dinoX++;  // Move down one page
+                // Accelerate falling (make velocity more negative)
+                if (state->jumpVelocity > -JUMP_INITIAL_VELOCITY) {
+                    state->jumpVelocity -= JUMP_GRAVITY;
+                }
+            } else {
+                // Landed
+                state->jumpVelocity = 0;
+                state->jumpFrameCounter = 0;
+            }
+        }
     }
 }
 
