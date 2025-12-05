@@ -12,57 +12,6 @@
  * This file contains all the game mechanics and sprite rendering functions
  * for a Chrome Dino-style endless runner game on the STM32 EK-STM3210E LCD.
  * 
- * AVAILABLE SPRITES (defined in lcd.c ChineseTable):
- * --------------------------------------------------
- * - SPRITE_DINO_STAND    (125-126): Dino standing/jumping pose
- * - SPRITE_DINO_RUN_1    (127-128): Dino running animation frame 1
- * - SPRITE_DINO_RUN_2    (129-130): Dino running animation frame 2
- * - SPRITE_DINO_DUCK_1   (131-132): Dino ducking pose
- * - SPRITE_CACTUS_BIG    (120-121): Large cactus obstacle
- * - SPRITE_CACTUS_SMALL  (122):     Small cactus obstacle
- * - SPRITE_STAR          (123-124): Star decoration
- * - SPRITE_BIRD_FLY_1    (134-135): Flying bird animation frame 1
- * - SPRITE_BIRD_FLY_2    (136-137): Flying bird animation frame 2
- * - SPRITE_GROUND_LINE   (133):     Ground line decoration
- * 
- * EXAMPLE USAGE IN main.c:
- * ------------------------
- * 
- *   // Initialize game
- *   DinoGameState gameState;
- *   initGameState(&gameState);
- *   
- *   // Draw initial ground
- *   drawGroundLine(0);
- *   
- *   // Game loop
- *   while(1) {
- *       // Clear old dino position
- *       clearSprite(gameState.dinoX, gameState.dinoY, 2);
- *       
- *       // Handle jump (trigger with button press)
- *       if (buttonPressed && !gameState.isJumping && gameState.jumpHeight == 0) {
- *           gameState.isJumping = 1;
- *       }
- *       handleJump(&gameState);
- *       
- *       // Update animation
- *       updateDinoAnimation(&gameState);
- *       
- *       // Draw dino at new position
- *       drawDino(&gameState);
- *       
- *       // Update and draw obstacles
- *       // (create Obstacle structs and call updateObstacle)
- *       
- *       // Delay for game speed
- *       HAL_Delay(gameState.gameSpeed);
- *       
- *       // Increment score
- *       gameState.score++;
- *       drawScore(gameState.score, 0, 100);
- *   }
- * 
  ******************************************************************************
  */
 
@@ -94,9 +43,14 @@ void drawDino(DinoGameState *state) {
     // Select sprite based on state
     // 16x16 sprites use 2 consecutive indices (e.g., 125 and 126)
     if (state->isCrouching) {
-        // Crouching sprite
-        sprite[0] = SPRITE_DINO_CROUCH;      // Index 144
-        sprite[1] = SPRITE_DINO_CROUCH + 1;  // Index 145
+        // Alternate between crouch frames for crouching animation
+        if (state->animFrame % 8 < 4) {
+            sprite[0] = SPRITE_DINO_CROUCH;      // Index 144
+            sprite[1] = SPRITE_DINO_CROUCH + 1;  // Index 145
+        } else {
+            sprite[0] = SPRITE_DINO_CROUCH_2;      // Index 146
+            sprite[1] = SPRITE_DINO_CROUCH_2 + 1;  // Index 147
+        }
     } else if (state->isJumping) {
         sprite[0] = SPRITE_DINO_STAND;      // Index 125
         sprite[1] = SPRITE_DINO_STAND + 1;  // Index 126

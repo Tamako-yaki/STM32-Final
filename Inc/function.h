@@ -45,7 +45,8 @@
 #define SPRITE_BIRD_FLY_1    138  // Flying bird frame 1 (16x16) - indices 138-139
 #define SPRITE_BIRD_FLY_2    140  // Flying bird frame 2 (16x16) - indices 140-141
 #define SPRITE_DINO_HIT      142  // Dino hit sprite (16x16) - indices 142-143
-#define SPRITE_DINO_CROUCH   144  // Dino crouch sprite (16x16) - indices 144-145
+#define SPRITE_DINO_CROUCH   144  // Dino crouch frame 1 (16x16) - indices 144-145
+#define SPRITE_DINO_CROUCH_2 146  // Dino crouch frame 2 (16x16) - indices 146-147
 
 // Bird flight heights (page number - lower = higher on screen)
 #define BIRD_FLIGHT_PAGE     3    // High bird flies at page 3, must NOT jump to avoid
