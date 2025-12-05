@@ -434,12 +434,9 @@ int main(void)
         HAL_Delay(200);  // Debounce
         game.lives = selectedLives;
         UART_SendString("\r\n=== GAME RESTART ===\r\n");
-        UART_SendString("Lives: ");
+UART_SendString("Lives: ");
         UART_SendNumber(game.lives);
         UART_SendString("\r\n");
-        
-        // Reset timer period to initial speed
-        __HAL_TIM_SET_AUTORELOAD(&htim1, TIMER_PERIOD_INIT);
         
         clearStartScreen();
         LCD_Clear();
@@ -565,7 +562,7 @@ void MX_TIM1_Init(void)
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 7200;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = TIMER_PERIOD_INIT;  // Initial ~10ms per frame, decreases over time for speed increase
+  htim1.Init.Period = TIMER_PERIOD_FIXED;  // Fixed fast frame rate (~4ms per frame)
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   HAL_TIM_Base_Init(&htim1);

@@ -288,10 +288,9 @@ void updateLivesLED(unsigned char lives) {
     HAL_GPIO_WritePin(LED1_GPIO_PORT, LED1_PIN, (lives >= 4) ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 
-// Update game speed using PWM - gradually increases pace over time
+// Update game speed - gradually increases pace over time
+// Uses frame-based control: currentSpeed = frames between obstacle moves
 // This function should be called every frame
-extern TIM_HandleTypeDef htim1;
-
 void updateGameSpeed(DinoGameState *state) {
     state->speedTimer++;
     
@@ -302,17 +301,6 @@ void updateGameSpeed(DinoGameState *state) {
         // Decrease obstacle speed (lower = faster movement)
         if (state->currentSpeed > OBSTACLE_SPEED_MIN) {
             state->currentSpeed--;
-        }
-        
-        // Also adjust PWM timer period for smoother overall game speed
-        // Get current period and decrease it
-        uint32_t currentPeriod = __HAL_TIM_GET_AUTORELOAD(&htim1);
-        if (currentPeriod > TIMER_PERIOD_MIN) {
-            uint32_t newPeriod = currentPeriod - TIMER_SPEED_STEP;
-            if (newPeriod < TIMER_PERIOD_MIN) {
-                newPeriod = TIMER_PERIOD_MIN;
-            }
-            __HAL_TIM_SET_AUTORELOAD(&htim1, newPeriod);
         }
     }
 }

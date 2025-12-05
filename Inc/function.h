@@ -53,10 +53,8 @@
 #define OBSTACLE_SPEED_MIN   1    // Minimum obstacle speed (fastest)
 #define SPEED_INCREASE_RATE  150  // Frames between speed increases
 
-// PWM Timer period constants (lower = faster game)
-#define TIMER_PERIOD_INIT    100  // Initial timer period (~10ms)
-#define TIMER_PERIOD_MIN     40   // Minimum timer period (~4ms, fastest)
-#define TIMER_SPEED_STEP     5    // How much to decrease period each speed increase
+// PWM Timer period constant (fixed fast frame rate)
+#define TIMER_PERIOD_FIXED   40   // Fixed timer period (~4ms per frame, ~250 FPS)
 
 // Obstacle spawn interval constants (frames between spawns)
 #define OBSTACLE_SPAWN_MIN   40   // Minimum frames between obstacle spawns
