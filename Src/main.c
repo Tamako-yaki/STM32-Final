@@ -434,7 +434,7 @@ int main(void)
         HAL_Delay(200);  // Debounce
         game.lives = selectedLives;
         UART_SendString("\r\n=== GAME RESTART ===\r\n");
-UART_SendString("Lives: ");
+        UART_SendString("Lives: ");
         UART_SendNumber(game.lives);
         UART_SendString("\r\n");
         

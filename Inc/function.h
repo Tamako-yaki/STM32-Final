@@ -40,24 +40,24 @@
 #define SPRITE_DINO_RUN_2    129  // Dino running frame 2 (16x16) - indices 129-130
 #define SPRITE_DINO_DEAD     131  // Dino dead sprite (16x16) - indices 131-132
 #define SPRITE_CLEAR         133  // Clear sprite (16x16) - indices 133-134
-#define SPRITE_GROUND_LINE   136  // Ground line (8x16) - index 136 has the line pixels
-#define SPRITE_MOON          139  // Moon decoration (16x16) - indices 139-140
+#define SPRITE_GROUND_LINE   135  // Ground line (8x16) - index 136 has the line pixels
+#define SPRITE_MOON          136  // Moon decoration (16x16) - indices 136-137
 
 // Game constants
 #define GROUND_PAGE          7    // The page/row where ground is drawn (bottom of LCD)
 #define DINO_GROUND_Y        64   // Dino's Y position when on ground
 #define JUMP_MAX_HEIGHT      3    // Maximum jump height in pages
 #define JUMP_HANG_TIME_MIN   8    // Normal hang time at jump peak (when button released)
-#define JUMP_HANG_TIME_MAX   20   // Maximum hang time at jump peak (when button held)
-#define OBSTACLE_SPEED_INIT  5    // Initial frames between obstacle movements (higher = slower)
-#define OBSTACLE_SPEED_MIN   1    // Minimum obstacle speed (fastest)
-#define SPEED_INCREASE_RATE  150  // Frames between speed increases
+#define JUMP_HANG_TIME_MAX   15   // Maximum hang time at jump peak (when button held)
+#define OBSTACLE_SPEED_INIT  6    // Initial frames between obstacle movements (higher = slower)
+#define OBSTACLE_SPEED_MIN   3    // Minimum obstacle speed (fastest)
+#define SPEED_INCREASE_RATE  160  // Frames between speed increases
 
 // PWM Timer period constant (fixed fast frame rate)
 #define TIMER_PERIOD_FIXED   40   // Fixed timer period (~4ms per frame, ~250 FPS)
 
 // Obstacle spawn interval constants (frames between spawns)
-#define OBSTACLE_SPAWN_MIN   40   // Minimum frames between obstacle spawns
+#define OBSTACLE_SPAWN_MIN   30   // Minimum frames between obstacle spawns
 #define OBSTACLE_SPAWN_MAX   100  // Maximum frames between obstacle spawns
 
 // Game state and animation variables
