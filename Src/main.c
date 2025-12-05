@@ -106,8 +106,8 @@ void Error_Handler(void);
 #define MAX_OBSTACLES 3  // Allow multiple obstacles on screen simultaneously
 #define BUTTON_PIN GPIO_PIN_0  // Jump button (WAKEUP)
 #define BUTTON_PORT GPIOA      // Jump button port
-#define CROUCH_BUTTON_PIN GPIO_PIN_13  // Crouch button (TAMPER)
-#define CROUCH_BUTTON_PORT GPIOC       // Crouch button port
+#define CROUCH_BUTTON_PIN GPIO_PIN_10  // Crouch button (USER)
+#define CROUCH_BUTTON_PORT GPIOB       // Crouch button port
 
 // Timer-based frame control
 extern volatile unsigned char gameTimerFlag;
@@ -705,6 +705,14 @@ static void MX_GPIO_Init(void)
 	
 	GPIO_InitStruct.Pin = GPIO_PIN_13;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  USER_BUTTON_GPIO_CLK_ENABLE();
+	GPIO_InitStruct.Mode  = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull  = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+	
+	GPIO_InitStruct.Pin = GPIO_PIN_10;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
 
