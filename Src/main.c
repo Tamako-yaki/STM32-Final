@@ -706,7 +706,7 @@ static void MX_GPIO_Init(void)
 	GPIO_InitStruct.Pin = GPIO_PIN_13;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  USER_BUTTON_GPIO_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 	GPIO_InitStruct.Mode  = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull  = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
