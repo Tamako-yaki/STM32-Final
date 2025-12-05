@@ -126,9 +126,9 @@ unsigned int getRandomSpawnInterval(void) {
 unsigned char getRandomObstacleType(void) {
   // Update random seed with additional entropy from system tick
   randomSeed = (randomSeed * 1103515245 + 12345 + HAL_GetTick()) & 0x7FFFFFFF;
-  // 50% chance for big cactus (type 0), 50% for small cactus (type 1)
+  // 33% chance for each: big cactus (0), small cactus (1), bird (2)
   // Use higher bits which have better randomness in LCG
-  return ((randomSeed >> 16) % 2);
+  return ((randomSeed >> 16) % 3);
 }
 
 // Simple UART send functions using HAL directly (no printf dependency)
@@ -298,9 +298,19 @@ int main(void)
       if (frameCount >= nextObstacleSpawn) {
         for (int i = 0; i < MAX_OBSTACLES; i++) {
           if (!obstacles[i].active) {
-            obstacles[i].x = GROUND_PAGE - 2;  // 2 page above ground
+            obstacles[i].type = getRandomObstacleType();  // Random: 0=big, 1=small cactus, 2=bird
             obstacles[i].y = 120;  // Start from right side
-            obstacles[i].type = getRandomObstacleType();  // Random: 0=big, 1=small cactus
+            obstacles[i].animFrame = 0;  // Reset animation frame
+            
+            // Set height based on obstacle type
+            if (obstacles[i].type == 2) {
+              // Bird flies above dino's head
+              obstacles[i].x = BIRD_FLIGHT_PAGE;
+            } else {
+              // Cactus on ground
+              obstacles[i].x = GROUND_PAGE - 2;  // 2 pages above ground
+            }
+            
             obstacles[i].active = 1;
             // Set next spawn time with random interval
             nextObstacleSpawn = frameCount + getRandomSpawnInterval();
@@ -322,9 +332,16 @@ int main(void)
             // Move obstacle left
             if (obstacles[i].y > 8) {
               obstacles[i].y -= 8;
+              obstacles[i].animFrame++;  // Update animation frame
             
-              // Draw at new position
-              drawCactus(obstacles[i].x, obstacles[i].y, obstacles[i].type);
+              // Draw at new position based on type
+              if (obstacles[i].type == 2) {
+                // Bird with animation
+                drawBird(obstacles[i].x, obstacles[i].y, obstacles[i].animFrame);
+              } else {
+                // Cactus
+                drawCactus(obstacles[i].x, obstacles[i].y, obstacles[i].type);
+              }
             } else {
               // Obstacle moved off screen
               obstacles[i].active = 0;
@@ -345,11 +362,25 @@ int main(void)
           unsigned char horizontalOverlap = (obstacles[i].y >= game.dinoY - 4 && 
                                              obstacles[i].y <= game.dinoY + 12);
           
-          // Check vertical overlap (X axis = page/vertical, lower X = higher on screen)
-          // Dino must be at same level or below obstacle top to collide
-          unsigned char verticalOverlap = (game.dinoX >= obstacles[i].x - 1);
+          unsigned char collision = 0;
           
-          if (horizontalOverlap && verticalOverlap) {
+          if (obstacles[i].type == 2) {
+            // Bird collision: only hits dino if dino is jumping (in the air)
+            // Bird is at BIRD_FLIGHT_PAGE (4), dino jumps from page 5 upward
+            // Collision if dino's page (dinoX) is at or above bird level
+            if (horizontalOverlap && game.dinoX <= BIRD_FLIGHT_PAGE + 1) {
+              collision = 1;
+            }
+          } else {
+            // Cactus collision: only hits dino if dino is on ground (not jumping high enough)
+            // Check vertical overlap (X axis = page/vertical, lower X = higher on screen)
+            unsigned char verticalOverlap = (game.dinoX >= obstacles[i].x - 1);
+            if (horizontalOverlap && verticalOverlap) {
+              collision = 1;
+            }
+          }
+          
+          if (collision) {
             // Collision! Lose a life
             game.lives--;
             UART_SendString("Hit! Lives remaining: ");

@@ -42,6 +42,11 @@
 #define SPRITE_CLEAR         133  // Clear sprite (16x16) - indices 133-134
 #define SPRITE_GROUND_LINE   135  // Ground line (8x16) - index 136 has the line pixels
 #define SPRITE_MOON          136  // Moon decoration (16x16) - indices 136-137
+#define SPRITE_BIRD_FLY_1    138  // Flying bird frame 1 (16x16) - indices 138-139
+#define SPRITE_BIRD_FLY_2    140  // Flying bird frame 2 (16x16) - indices 140-141
+
+// Bird flight height (page number - lower = higher on screen)
+#define BIRD_FLIGHT_PAGE     4    // Bird flies at page 4, dino is at page 5 when on ground
 
 // Game constants
 #define GROUND_PAGE          7    // The page/row where ground is drawn (bottom of LCD)
@@ -82,6 +87,7 @@ typedef struct {
     unsigned char y;              // Y position (column)
     unsigned char type;           // 0=cactus big, 1=cactus small, 2=bird
     unsigned char active;         // Is obstacle active
+    unsigned char animFrame;      // Animation frame for bird
 } Obstacle;
 
 // Game functions
@@ -89,6 +95,7 @@ void drawDino(DinoGameState *state);
 void drawDinoDead(DinoGameState *state);  // Draw dead dino sprite
 void updateDinoAnimation(DinoGameState *state);
 void drawCactus(unsigned char x, unsigned char y, unsigned char type);
+void drawBird(unsigned char x, unsigned char y, unsigned char animFrame);  // Draw animated bird
 void drawStar(unsigned char x, unsigned char y);
 void drawMoon(unsigned char x, unsigned char y);
 void drawGroundLine(unsigned char y);

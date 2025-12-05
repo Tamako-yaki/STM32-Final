@@ -170,6 +170,20 @@ void drawCactus(unsigned char x, unsigned char y, unsigned char type) {
     }
 }
 
+// Draw a flying bird with animation
+void drawBird(unsigned char x, unsigned char y, unsigned char animFrame) {
+    unsigned char sprite[2];
+    // Alternate between two bird frames for flapping animation
+    if (animFrame % 8 < 4) {
+        sprite[0] = SPRITE_BIRD_FLY_1;
+        sprite[1] = SPRITE_BIRD_FLY_1 + 1;
+    } else {
+        sprite[0] = SPRITE_BIRD_FLY_2;
+        sprite[1] = SPRITE_BIRD_FLY_2 + 1;
+    }
+    LCD_DrawString(x, y, sprite, 2);
+}
+
 // Draw a star decoration
 void drawStar(unsigned char x, unsigned char y) {
     unsigned char sprite[2] = {SPRITE_STAR, SPRITE_STAR + 1};
