@@ -286,9 +286,10 @@ int main(void)
         game.buttonHeld = 0;  // Button released
       }
       
-      // Check for crouch button (TAMPER button - active LOW with pull-up)
+      // Check for crouch button (USER button - active LOW with pull-up)
       GPIO_PinState crouchState = HAL_GPIO_ReadPin(CROUCH_BUTTON_PORT, CROUCH_BUTTON_PIN);
-      if (crouchState == GPIO_PIN_RESET && !game.isJumping && game.jumpHeight == 0) {
+      if (crouchState == GPIO_PIN_RESET) {
+        // Crouch button pressed - either crouch on ground or fast-fall in air
         game.isCrouching = 1;
       } else {
         game.isCrouching = 0;
