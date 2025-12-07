@@ -106,7 +106,7 @@ void Error_Handler(void);
 #define MAX_OBSTACLES 3  // Allow multiple obstacles on screen simultaneously
 #define BUTTON_PIN GPIO_PIN_0  // Jump button (WAKEUP)
 #define BUTTON_PORT GPIOA      // Jump button port
-#define CROUCH_BUTTON_PIN GPIO_PIN_10  // Crouch button (USER)
+#define CROUCH_BUTTON_PIN GPIO_PIN_10  // Crouch button (KEY)
 #define CROUCH_BUTTON_PORT GPIOB       // Crouch button port
 
 // Timer-based frame control
@@ -214,6 +214,24 @@ int main(void)
   drawStartScreen();
   unsigned char selectedLives = 1;
   updateLivesLED(selectedLives);
+  
+  // Print welcome message and instructions to UART
+  UART_SendString("\r\n========================================\r\n");
+  UART_SendString("      == Dino Game STM32 Version ==     \r\n");
+  UART_SendString("========================================\r\n");
+  UART_SendString("\r\n[SETUP]\r\n");
+  UART_SendString("  Turn the knob to select lives (1-4).\r\n");
+  UART_SendString("  Lives are indicated by LEDs.\r\n");
+  UART_SendString("\r\n[CONTROLS]\r\n");
+  UART_SendString("  WAKEUP Button (PA0): Jump\r\n");
+  UART_SendString("  KEY Button (PB10):  Crouch\r\n");
+  UART_SendString("\r\n[TIPS]\r\n");
+  UART_SendString("  - Jump over cactuses\r\n");
+  UART_SendString("  - Crouch under low birds\r\n");
+  UART_SendString("  - Stay grounded for high birds\r\n");
+  UART_SendString("  - Press crouch while jumping for\r\n");
+  UART_SendString("    immediate fast-fall landing!\r\n");
+  UART_SendString("\r\nPress WAKEUP button to start...\r\n");
   
   // Wait for button press while reading ADC to select lives
   while (HAL_GPIO_ReadPin(BUTTON_PORT, BUTTON_PIN) != GPIO_PIN_SET) {
@@ -430,10 +448,13 @@ int main(void)
             if (game.lives == 0) {
               // No more lives - Game Over
               gameOver = 1;
-              UART_SendString("\r\n=== GAME OVER ===\r\n");
+              UART_SendString("\r\n========================================\r\n");
+              UART_SendString("            === GAME OVER ===           \r\n");
+              UART_SendString("========================================\r\n");
               UART_SendString("Final Score: ");
               UART_SendNumber(game.score);
               UART_SendString("\r\n");
+              UART_SendString("\r\nPress WAKEUP button to play again...\r\n");
               
               // Draw dead dino sprite at collision position
               drawDinoDead(&game);
@@ -475,6 +496,24 @@ int main(void)
         drawStartScreen();
         unsigned char selectedLives = 1;
         updateLivesLED(selectedLives);
+        
+        // Print welcome message and instructions to UART
+        UART_SendString("\r\n========================================\r\n");
+        UART_SendString("      == Dino Game STM32 Version ==     \r\n");
+        UART_SendString("========================================\r\n");
+        UART_SendString("\r\n[SETUP]\r\n");
+        UART_SendString("  Turn the knob to select lives (1-4).\r\n");
+        UART_SendString("  Lives are indicated by LEDs.\r\n");
+        UART_SendString("\r\n[CONTROLS]\r\n");
+        UART_SendString("  WAKEUP Button (PA0): Jump\r\n");
+        UART_SendString("  KEY Button (PB10):  Crouch\r\n");
+        UART_SendString("\r\n[TIPS]\r\n");
+        UART_SendString("  - Jump over cactuses\r\n");
+        UART_SendString("  - Crouch under low birds\r\n");
+        UART_SendString("  - Stay grounded for high birds\r\n");
+        UART_SendString("  - Press crouch while jumping for\r\n");
+        UART_SendString("    immediate fast-fall landing!\r\n");
+        UART_SendString("\r\nPress WAKEUP button to start...\r\n");
         
         // Wait for button press while reading ADC to select lives
         HAL_Delay(300);  // Wait for button release
