@@ -54,7 +54,6 @@
 
 // Game constants
 #define GROUND_PAGE          7    // The page/row where ground is drawn (bottom of LCD)
-#define DINO_GROUND_Y        64   // Dino's Y position when on ground
 #define JUMP_MAX_HEIGHT      3    // Maximum jump height in pages
 #define JUMP_INITIAL_VELOCITY 6   // Initial upward velocity (higher = faster start)
 #define JUMP_GRAVITY         1    // How much velocity decreases each move (gravity effect)
