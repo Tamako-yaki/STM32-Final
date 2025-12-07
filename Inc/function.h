@@ -111,6 +111,7 @@ void drawStar(unsigned char x, unsigned char y);
 void drawMoon(unsigned char x, unsigned char y);
 void drawGroundLine(unsigned char y);
 void drawGroundLinePartial(unsigned char page, unsigned char startCol, unsigned char endCol);
+void drawGroundLineAvoidSprites(unsigned char page, DinoGameState *dino, Obstacle *obstacles, unsigned char numObstacles);
 void clearGroundLine(unsigned char page);
 void animateGroundLineEntry(unsigned char page);  // Start animation - ground comes from right
 void clearSprite(unsigned char x, unsigned char y, unsigned char width);

@@ -244,6 +244,44 @@ void clearGroundLine(unsigned char page) {
     }
 }
 
+// Draw ground line while avoiding dino and obstacle positions
+// This prevents the ground line from erasing the bottom half of sprites
+void drawGroundLineAvoidSprites(unsigned char page, DinoGameState *dino, Obstacle *obstacles, unsigned char numObstacles) {
+    unsigned char sprite[1] = {SPRITE_GROUND_LINE};
+    
+    // Create a mask of columns to skip (each bit = one 8-pixel block)
+    // We have 16 blocks (128 pixels / 8 = 16)
+    unsigned short skipMask = 0;
+    
+    // Mark dino's columns to skip (dino is 16 pixels wide = 2 blocks)
+    // Only skip if dino is on a page that overlaps with ground line
+    if (dino->dinoX >= page - 1 && dino->dinoX <= page) {
+        unsigned char dinoBlock = dino->dinoY / 8;
+        if (dinoBlock < 16) skipMask |= (1 << dinoBlock);
+        if (dinoBlock + 1 < 16) skipMask |= (1 << (dinoBlock + 1));
+    }
+    
+    // Mark obstacle columns to skip
+    for (unsigned char i = 0; i < numObstacles; i++) {
+        if (obstacles[i].active) {
+            // Only skip if obstacle is on a page that overlaps with ground line
+            // Ground-based obstacles (cactus) are at GROUND_PAGE - GROUND_OFFSET
+            if (obstacles[i].x >= page - 1 && obstacles[i].x <= page) {
+                unsigned char obsBlock = obstacles[i].y / 8;
+                if (obsBlock < 16) skipMask |= (1 << obsBlock);
+                if (obsBlock + 1 < 16) skipMask |= (1 << (obsBlock + 1));
+            }
+        }
+    }
+    
+    // Draw ground line, skipping marked columns
+    for (unsigned char i = 0; i < 16; i++) {
+        if (!(skipMask & (1 << i))) {
+            LCD_DrawString(page, i * 8, sprite, 1);
+        }
+    }
+}
+
 // Animate ground line entry from right to left (blocking animation for start screen)
 // This creates a cool starting effect where the ground "rolls in" from the right
 void animateGroundLineEntry(unsigned char page) {

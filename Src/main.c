@@ -309,8 +309,9 @@ int main(void)
       // Draw dino at new position
       drawDino(&game);
       
-      // Redraw ground line to keep it visible throughout the game
-      drawGroundLine(GROUND_PAGE);
+      // Redraw ground line while avoiding dino and obstacle positions
+      // This prevents erasing the bottom half of sprites
+      drawGroundLineAvoidSprites(GROUND_PAGE, &game, obstacles, MAX_OBSTACLES);
       
       // Spawn obstacles with random spacing
       frameCount++;
