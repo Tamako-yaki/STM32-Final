@@ -269,7 +269,11 @@ void drawGroundLineAvoidSprites(unsigned char page, DinoGameState *dino, Obstacl
             if (obstacles[i].x >= page - 1 && obstacles[i].x <= page) {
                 unsigned char obsBlock = obstacles[i].y / 8;
                 if (obsBlock < 16) skipMask |= (1 << obsBlock);
-                if (obsBlock + 1 < 16) skipMask |= (1 << (obsBlock + 1));
+                // Only skip second block for 16-pixel wide sprites (big cactus, type 0)
+                // Small cactus (type 1) is only 8 pixels wide = 1 block
+                if (obstacles[i].type != 1) {
+                    if (obsBlock + 1 < 16) skipMask |= (1 << (obsBlock + 1));
+                }
             }
         }
     }
