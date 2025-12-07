@@ -260,9 +260,10 @@ int main(void)
   // Clear start screen and draw game elements
   clearStartScreen();
   LCD_Clear();
-  drawGroundLine(0);
+  drawGroundLine(GROUND_PAGE);
   drawStar(0, 20);   // Static star decoration at top
   drawMoon(0, 50);   // Moon decoration at top
+  drawStar(1, 72);   // Static star 2 decoration at top
   drawGameScore(0);  // Initialize score display at 0
   
   unsigned int frameCount = 0;
@@ -498,7 +499,7 @@ int main(void)
         
         clearStartScreen();
         LCD_Clear();
-        drawGroundLine(0);
+        drawGroundLine(GROUND_PAGE);
         drawStar(0, 20);
         drawMoon(0, 90);
         drawGameScore(0);  // Initialize score display at 0

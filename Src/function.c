@@ -215,7 +215,7 @@ void drawGroundLine(unsigned char y) {
     // Use SPRITE_GROUND_LINE (132) which has the line in the bottom byte
     unsigned char sprite[1] = {SPRITE_GROUND_LINE};
     for (unsigned char i = 0; i < 16; i++) {  // 128 pixels / 8 = 16 sprites
-        LCD_DrawString(GROUND_PAGE, i * 8, sprite, 1);
+        LCD_DrawString(y, i * 8, sprite, 1);
     }
 }
 
