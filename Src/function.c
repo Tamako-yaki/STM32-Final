@@ -284,15 +284,31 @@ void drawGroundLineAvoidSprites(unsigned char page, DinoGameState *dino, Obstacl
 
 // Animate ground line entry from right to left (blocking animation for start screen)
 // This creates a cool starting effect where the ground "rolls in" from the right
-void animateGroundLineEntry(unsigned char page) {
+// The dino runs in place while waiting for the ground to arrive
+void animateGroundLineEntry(unsigned char page, DinoGameState *dino) {
     unsigned char sprite[1] = {SPRITE_GROUND_LINE};
+    
+    // Draw dino first before ground animation starts
+    drawDino(dino);
     
     // Start from rightmost position and draw progressively to the left
     // Each step adds one more 8-pixel block from the right
     for (int col = 15; col >= 0; col--) {
-        // Draw from current column to the right edge
+        // Update dino animation frame
+        updateDinoAnimation(dino);
+        
+        // Redraw dino with updated animation
+        clearSprite(dino->dinoX, dino->dinoY, 2);
+        drawDino(dino);
+        
+        // Draw ground line from current column to the right edge
+        // Skip the dino's columns to avoid overwriting its bottom half
+        unsigned char dinoStartBlock = dino->dinoY / 8;
         for (int i = col; i < 16; i++) {
-            LCD_DrawString(page, i * 8, sprite, 1);
+            // Skip dino's columns (2 blocks wide)
+            if (i != dinoStartBlock && i != dinoStartBlock + 1) {
+                LCD_DrawString(page, i * 8, sprite, 1);
+            }
         }
         HAL_Delay(30);  // Animation delay between frames
     }

@@ -261,8 +261,8 @@ int main(void)
   clearStartScreen();
   LCD_Clear();
   
-  // Animate ground line entry from right to left (starting animation)
-  animateGroundLineEntry(GROUND_PAGE);
+  // Animate ground line entry from right to left with dino running animation
+  animateGroundLineEntry(GROUND_PAGE, &game);
   
   drawStar(0, 20);   // Static star decoration at top
   drawMoon(0, 50);   // Moon decoration at top
@@ -507,8 +507,8 @@ int main(void)
         clearStartScreen();
         LCD_Clear();
         
-        // Animate ground line entry from right to left (starting animation)
-        animateGroundLineEntry(GROUND_PAGE);
+        // Animate ground line entry from right to left with dino running animation
+        animateGroundLineEntry(GROUND_PAGE, &game);
         
         drawStar(0, 20);
         drawMoon(0, 90);
