@@ -219,31 +219,6 @@ void drawGroundLine(unsigned char page) {
     }
 }
 
-// Draw ground line from startCol to endCol (for partial drawing / animation)
-// startCol and endCol are in pixels (0-127)
-void drawGroundLinePartial(unsigned char page, unsigned char startCol, unsigned char endCol) {
-    unsigned char sprite[1] = {SPRITE_GROUND_LINE};
-    unsigned char blank[1] = {22};  // Blank sprite
-    
-    // Calculate which 8-pixel blocks to draw
-    unsigned char startBlock = startCol / 8;
-    unsigned char endBlock = endCol / 8;
-    if (endBlock > 15) endBlock = 15;  // Clamp to 16 blocks max
-    
-    // Draw ground line sprites in the specified range
-    for (unsigned char i = startBlock; i <= endBlock; i++) {
-        LCD_DrawString(page, i * 8, sprite, 1);
-    }
-}
-
-// Clear the ground line on a page
-void clearGroundLine(unsigned char page) {
-    unsigned char blank[1] = {22};  // Blank sprite
-    for (unsigned char i = 0; i < 16; i++) {
-        LCD_DrawString(page, i * 8, blank, 1);
-    }
-}
-
 // Draw ground line while avoiding dino and obstacle positions
 // This prevents the ground line from erasing the bottom half of sprites
 void drawGroundLineAvoidSprites(unsigned char page, DinoGameState *dino, Obstacle *obstacles, unsigned char numObstacles) {
@@ -350,17 +325,20 @@ void updateObstacle(Obstacle *obs) {
 
 // Draw score using number sprites
 void drawScore(unsigned int score, unsigned char x, unsigned char y) {
-    // Convert score to digits and draw
-    unsigned char digits[5];
+    // Convert score to digits and draw (max 3 digits)
+    unsigned char digits[3];
     unsigned char numDigits = 0;
     unsigned int temp = score;
+    
+    // Cap score at 999
+    if (temp > 999) temp = 999;
     
     // Extract digits
     if (temp == 0) {
         digits[0] = 0;
         numDigits = 1;
     } else {
-        while (temp > 0 && numDigits < 5) {
+        while (temp > 0 && numDigits < 3) {
             digits[numDigits++] = temp % 10;
             temp /= 10;
         }
@@ -376,15 +354,18 @@ void drawScore(unsigned int score, unsigned char x, unsigned char y) {
 // Draw game score in upper right corner of LCD
 // LCD is 128 pixels wide, score at page 0 (top), right-aligned
 void drawGameScore(unsigned int score) {
-    // First clear the score area (up to 5 digits = 40 pixels)
-    unsigned char blank[5] = {22, 22, 22, 22, 22};  // Index 22 is blank
-    LCD_DrawString(0, 88, blank, 5);  // Clear from column 88 to 128
+    // First clear the score area (up to 3 digits = 24 pixels)
+    unsigned char blank[3] = {22, 22, 22};  // Index 22 is blank
+    LCD_DrawString(0, 104, blank, 3);  // Clear from column 104 to 128
+    
+    // Cap score at 999
+    if (score > 999) score = 999;
     
     // Draw score right-aligned at upper right
     // Calculate starting position based on number of digits
     unsigned char numDigits = 1;
     unsigned int temp = score;
-    while (temp >= 10 && numDigits < 5) {
+    while (temp >= 10 && numDigits < 3) {
         temp /= 10;
         numDigits++;
     }

@@ -110,9 +110,7 @@ void drawBird(unsigned char x, unsigned char y, unsigned char animFrame);  // Dr
 void drawStar(unsigned char x, unsigned char y);
 void drawMoon(unsigned char x, unsigned char y);
 void drawGroundLine(unsigned char y);
-void drawGroundLinePartial(unsigned char page, unsigned char startCol, unsigned char endCol);
 void drawGroundLineAvoidSprites(unsigned char page, DinoGameState *dino, Obstacle *obstacles, unsigned char numObstacles);
-void clearGroundLine(unsigned char page);
 void animateGroundLineEntry(unsigned char page, DinoGameState *dino);  // Start animation - ground comes from right with dino running
 void clearSprite(unsigned char x, unsigned char y, unsigned char width);
 void initGameState(DinoGameState *state);
