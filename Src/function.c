@@ -21,7 +21,7 @@
 
 // Initialize game state
 void initGameState(DinoGameState *state) {
-    state->dinoX = GROUND_PAGE - 2; // Start 2 page above ground (page 5)
+    state->dinoX = GROUND_PAGE - GROUND_OFFSET; // Start 2 page above ground (page 5)
     state->dinoY = 8;  // Leftmost position
     state->dinoState = 0;  // Running
     state->animFrame = 0;

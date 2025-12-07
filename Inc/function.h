@@ -54,6 +54,7 @@
 
 // Game constants
 #define GROUND_PAGE          7    // The page/row where ground is drawn (bottom of LCD)
+#define GROUND_OFFSET        1    // Offset from ground page where DINO and Obstacles are drawn
 #define JUMP_MAX_HEIGHT      3    // Maximum jump height in pages
 #define JUMP_INITIAL_VELOCITY 6   // Initial upward velocity (higher = faster start)
 #define JUMP_GRAVITY         1    // How much velocity decreases each move (gravity effect)

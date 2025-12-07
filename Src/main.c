@@ -323,7 +323,7 @@ int main(void)
               obstacles[i].x = BIRD_LOW_FLIGHT_PAGE;
             } else {
               // Cactus on ground
-              obstacles[i].x = GROUND_PAGE - 2;  // 2 pages above ground
+              obstacles[i].x = GROUND_PAGE - GROUND_OFFSET;  // 2 pages above ground
             }
             
             obstacles[i].active = 1;
