@@ -69,6 +69,10 @@
 #define OBSTACLE_SPAWN_MIN   30   // Minimum frames between obstacle spawns
 #define OBSTACLE_SPAWN_MAX   100  // Maximum frames between obstacle spawns
 
+// Ground line animation constants
+#define GROUND_LINE_WIDTH    128  // Total width of ground line in pixels
+#define GROUND_LINE_SCROLL_SPEED 8  // Pixels to scroll per frame
+
 // Game state and animation variables
 typedef struct {
     unsigned char dinoX;          // Dino X position (page)
@@ -106,6 +110,9 @@ void drawBird(unsigned char x, unsigned char y, unsigned char animFrame);  // Dr
 void drawStar(unsigned char x, unsigned char y);
 void drawMoon(unsigned char x, unsigned char y);
 void drawGroundLine(unsigned char y);
+void drawGroundLinePartial(unsigned char page, unsigned char startCol, unsigned char endCol);
+void clearGroundLine(unsigned char page);
+void animateGroundLineEntry(unsigned char page);  // Start animation - ground comes from right
 void clearSprite(unsigned char x, unsigned char y, unsigned char width);
 void initGameState(DinoGameState *state);
 void handleJump(DinoGameState *state);

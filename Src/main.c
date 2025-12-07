@@ -260,7 +260,10 @@ int main(void)
   // Clear start screen and draw game elements
   clearStartScreen();
   LCD_Clear();
-  drawGroundLine(GROUND_PAGE);
+  
+  // Animate ground line entry from right to left (starting animation)
+  animateGroundLineEntry(GROUND_PAGE);
+  
   drawStar(0, 20);   // Static star decoration at top
   drawMoon(0, 50);   // Moon decoration at top
   drawStar(1, 72);   // Static star 2 decoration at top
@@ -305,6 +308,9 @@ int main(void)
       
       // Draw dino at new position
       drawDino(&game);
+      
+      // Redraw ground line to keep it visible throughout the game
+      drawGroundLine(GROUND_PAGE);
       
       // Spawn obstacles with random spacing
       frameCount++;
@@ -499,7 +505,10 @@ int main(void)
         
         clearStartScreen();
         LCD_Clear();
-        drawGroundLine(GROUND_PAGE);
+        
+        // Animate ground line entry from right to left (starting animation)
+        animateGroundLineEntry(GROUND_PAGE);
+        
         drawStar(0, 20);
         drawMoon(0, 90);
         drawGameScore(0);  // Initialize score display at 0

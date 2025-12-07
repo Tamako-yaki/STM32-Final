@@ -209,13 +209,54 @@ void drawMoon(unsigned char x, unsigned char y) {
     LCD_DrawString(x, y, sprite, 2);
 }
 
-// Draw ground line
-void drawGroundLine(unsigned char y) {
+// Draw ground line (full width)
+void drawGroundLine(unsigned char page) {
     // Draw a continuous line across the entire width at GROUND_PAGE
-    // Use SPRITE_GROUND_LINE (132) which has the line in the bottom byte
+    // Use SPRITE_GROUND_LINE (135) which has the line in the bottom byte
     unsigned char sprite[1] = {SPRITE_GROUND_LINE};
     for (unsigned char i = 0; i < 16; i++) {  // 128 pixels / 8 = 16 sprites
-        LCD_DrawString(y, i * 8, sprite, 1);
+        LCD_DrawString(page, i * 8, sprite, 1);
+    }
+}
+
+// Draw ground line from startCol to endCol (for partial drawing / animation)
+// startCol and endCol are in pixels (0-127)
+void drawGroundLinePartial(unsigned char page, unsigned char startCol, unsigned char endCol) {
+    unsigned char sprite[1] = {SPRITE_GROUND_LINE};
+    unsigned char blank[1] = {22};  // Blank sprite
+    
+    // Calculate which 8-pixel blocks to draw
+    unsigned char startBlock = startCol / 8;
+    unsigned char endBlock = endCol / 8;
+    if (endBlock > 15) endBlock = 15;  // Clamp to 16 blocks max
+    
+    // Draw ground line sprites in the specified range
+    for (unsigned char i = startBlock; i <= endBlock; i++) {
+        LCD_DrawString(page, i * 8, sprite, 1);
+    }
+}
+
+// Clear the ground line on a page
+void clearGroundLine(unsigned char page) {
+    unsigned char blank[1] = {22};  // Blank sprite
+    for (unsigned char i = 0; i < 16; i++) {
+        LCD_DrawString(page, i * 8, blank, 1);
+    }
+}
+
+// Animate ground line entry from right to left (blocking animation for start screen)
+// This creates a cool starting effect where the ground "rolls in" from the right
+void animateGroundLineEntry(unsigned char page) {
+    unsigned char sprite[1] = {SPRITE_GROUND_LINE};
+    
+    // Start from rightmost position and draw progressively to the left
+    // Each step adds one more 8-pixel block from the right
+    for (int col = 15; col >= 0; col--) {
+        // Draw from current column to the right edge
+        for (int i = col; i < 16; i++) {
+            LCD_DrawString(page, i * 8, sprite, 1);
+        }
+        HAL_Delay(30);  // Animation delay between frames
     }
 }
 
