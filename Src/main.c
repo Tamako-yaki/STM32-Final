@@ -510,8 +510,9 @@ int main(void)
         // Animate ground line entry from right to left with dino running animation
         animateGroundLineEntry(GROUND_PAGE, &game);
         
-        drawStar(0, 20);
-        drawMoon(0, 90);
+        drawStar(0, 20);   // Static star decoration at top
+        drawMoon(0, 50);   // Moon decoration at top
+        drawStar(1, 72);   // Static star 2 decoration at top
         drawGameScore(0);  // Initialize score display at 0
         frameCount = 0;
         nextObstacleSpawn = 10;  // First obstacle spawns quickly after restart
