@@ -113,8 +113,7 @@ void Error_Handler(void);
 extern volatile unsigned char gameTimerFlag;
 
 Obstacle obstacles[MAX_OBSTACLES];
-unsigned char obstacleSpawnCounter = 0;
-unsigned int nextObstacleSpawn = 100;  // Frame count for next spawn
+unsigned int nextObstacleSpawn = 100;
 
 // Simple pseudo-random number generator
 unsigned int randomSeed = 12345;
@@ -188,16 +187,10 @@ int main(void)
   LCD_Init();
   LCD_Clear();
 	
-	/* Check TIM Init----------------------------------------------------------*/
 	if (HAL_TIM_Base_Start_IT(&htim1) != HAL_OK)
   {
-    /* Initialization Error */
-    UART_SendString("Timer Broken\r\n");
+    UART_SendString("Timer Init Error\r\n");
   }
-  
-	/* Output a message on Hyperterminal using direct UART */
-  UART_SendString("\r\n UART Direct Test - HAL_UART_Transmit\r\n");
-  UART_SendString("** Test finished successfully. **\r\n");
 
 	/* -------------------------------MAIN PROGRAM-----------------------------*/
   

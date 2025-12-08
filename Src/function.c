@@ -20,43 +20,41 @@
 #include "string.h"
 
 // Ground pattern - creates varied terrain that scrolls
-// Mix of plain line, dips, bumps, and pebbles for natural look
 static const unsigned char groundPattern[GROUND_PATTERN_LENGTH] = {
-    SPRITE_GROUND_LINE,    // 0: plain
-    SPRITE_GROUND_LINE,    // 1: plain
-    SPRITE_GROUND_LINE_4,  // 2: pebbles
-    SPRITE_GROUND_LINE_3,  // 7: small bump
-    SPRITE_GROUND_LINE,    // 3: plain
-    SPRITE_GROUND_LINE,    // 5: plain
-    SPRITE_GROUND_LINE,    // 6: plain
-    SPRITE_GROUND_LINE_2,  // 4: small dip
-    SPRITE_GROUND_LINE,    // 8: plain
-    SPRITE_GROUND_LINE_4,  // 9: pebbles
-    SPRITE_GROUND_LINE,    // 10: plain
-    SPRITE_GROUND_LINE,    // 11: plain
-    SPRITE_GROUND_LINE_3,  // 12: small bump
-    SPRITE_GROUND_LINE,    // 13: plain
-    SPRITE_GROUND_LINE,    // 15: plain
-	SPRITE_GROUND_LINE_2,  // 14: small dip
+    SPRITE_GROUND_LINE,
+    SPRITE_GROUND_LINE,
+    SPRITE_GROUND_LINE_4,
+    SPRITE_GROUND_LINE_3,
+    SPRITE_GROUND_LINE,
+    SPRITE_GROUND_LINE,
+    SPRITE_GROUND_LINE,
+    SPRITE_GROUND_LINE_2,
+    SPRITE_GROUND_LINE,
+    SPRITE_GROUND_LINE_4,
+    SPRITE_GROUND_LINE,
+    SPRITE_GROUND_LINE,
+    SPRITE_GROUND_LINE_3,
+    SPRITE_GROUND_LINE,
+    SPRITE_GROUND_LINE,
+    SPRITE_GROUND_LINE_2,
 };
 
 // Initialize game state
 void initGameState(DinoGameState *state) {
-    state->dinoX = GROUND_PAGE - GROUND_OFFSET; // Start 2 page above ground (page 5)
-    state->dinoY = 8;  // Leftmost position
-    state->dinoState = 0;  // Running
+    state->dinoX = GROUND_PAGE - GROUND_OFFSET;
+    state->dinoY = 8;
     state->animFrame = 0;
     state->jumpHeight = 0;
     state->isJumping = 0;
     state->isCrouching = 0;
     state->jumpVelocity = 0;
     state->jumpFrameCounter = 0;
-    state->buttonHeld = 0;  // Button not held initially
-    state->lives = 1;  // Default 1 life
+    state->buttonHeld = 0;
+    state->lives = 1;
     state->score = 0;
-    state->currentSpeed = OBSTACLE_SPEED_INIT;  // Start with initial speed
-    state->speedTimer = 0;  // Reset speed timer
-    state->groundOffset = 0;  // Reset ground scroll offset
+    state->currentSpeed = OBSTACLE_SPEED_INIT;
+    state->speedTimer = 0;
+    state->groundOffset = 0;
 }
 
 // Draw the dino at current state position
@@ -241,11 +239,9 @@ void drawGroundLine(unsigned char page) {
     }
 }
 
-// Draw ground line with scrolling pattern
-// offset determines where in the pattern we start (creates scrolling effect)
-void drawGroundLineScrolling(unsigned char page, unsigned char offset) {
+// Draw ground line with scrolling pattern (internal use)
+static void drawGroundLineScrolling(unsigned char page, unsigned char offset) {
     for (unsigned char i = 0; i < 16; i++) {
-        // Get sprite from pattern with offset for scrolling effect
         unsigned char patternIndex = (i + offset) % GROUND_PATTERN_LENGTH;
         unsigned char sprite[1] = {groundPattern[patternIndex]};
         LCD_DrawString(page, i * 8, sprite, 1);
@@ -338,31 +334,9 @@ void animateGroundLineEntry(unsigned char page, DinoGameState *dino) {
 
 // Clear a sprite area by drawing blank characters
 void clearSprite(unsigned char x, unsigned char y, unsigned char width) {
-    // Draw blank characters to clear the area
-    unsigned char blank[1] = {22};  // Index 22 is blank in ChineseTable
+    unsigned char blank[1] = {22};
     for (unsigned char i = 0; i < width; i++) {
         LCD_DrawString(x, y + (i * 8), blank, 1);
-    }
-}
-
-// Update obstacle position (move left)
-void updateObstacle(Obstacle *obs) {
-    if (obs->active) {
-        if (obs->y > 0) {
-            // Clear old position
-            clearSprite(obs->x, obs->y, 2);
-            
-            // Move left
-            obs->y -= 8;
-            
-            // Draw at new position
-            if (obs->type == 0 || obs->type == 1) {
-                drawCactus(obs->x, obs->y, obs->type);
-            }
-        } else {
-            // Obstacle has moved off screen
-            obs->active = 0;
-        }
     }
 }
 
