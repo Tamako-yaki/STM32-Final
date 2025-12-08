@@ -39,14 +39,19 @@
 #define SPRITE_DINO_RUN      127  // Dino running frame 1 (16x16) - indices 127-128
 #define SPRITE_DINO_RUN_2    129  // Dino running frame 2 (16x16) - indices 129-130
 #define SPRITE_DINO_DEAD     131  // Dino dead sprite (16x16) - indices 131-132
-#define SPRITE_CLEAR         133  // Clear sprite (16x16) - indices 133-134
-#define SPRITE_GROUND_LINE   135  // Ground line (8x16) - index 136 has the line pixels
-#define SPRITE_MOON          136  // Moon decoration (16x16) - indices 136-137
-#define SPRITE_BIRD_FLY_1    138  // Flying bird frame 1 (16x16) - indices 138-139
-#define SPRITE_BIRD_FLY_2    140  // Flying bird frame 2 (16x16) - indices 140-141
-#define SPRITE_DINO_HIT      142  // Dino hit sprite (16x16) - indices 142-143
-#define SPRITE_DINO_CROUCH   144  // Dino crouch frame 1 (16x16) - indices 144-145
-#define SPRITE_DINO_CROUCH_2 146  // Dino crouch frame 2 (16x16) - indices 146-147
+#define SPRITE_MOON          133  // Moon decoration (16x16) - indices 136-137
+#define SPRITE_BIRD_FLY_1    135  // Flying bird frame 1 (16x16) - indices 138-139
+#define SPRITE_BIRD_FLY_2    137  // Flying bird frame 2 (16x16) - indices 140-141
+#define SPRITE_DINO_HIT      139  // Dino hit sprite (16x16) - indices 142-143
+#define SPRITE_DINO_CROUCH   141  // Dino crouch frame 1 (16x16) - indices 144-145
+#define SPRITE_DINO_CROUCH_2 143  // Dino crouch frame 2 (16x16) - indices 146-147
+#define SPRITE_GROUND_LINE   145  // Ground line 1 - plain (8x16)
+#define SPRITE_GROUND_LINE_2 146  // Ground line 2 - small dip (8x16)
+#define SPRITE_GROUND_LINE_3 147  // Ground line 3 - small bump (8x16)
+#define SPRITE_GROUND_LINE_4 148  // Ground line 4 - with pebbles (8x16)
+
+// Ground pattern length (number of tiles in repeating pattern)
+#define GROUND_PATTERN_LENGTH 16
 
 // Bird flight heights (page number - lower = higher on screen)
 #define BIRD_FLIGHT_PAGE     3    // High bird flies at page 3, must NOT jump to avoid
@@ -89,6 +94,7 @@ typedef struct {
     unsigned int score;           // Current game score
     unsigned char currentSpeed;   // Current obstacle speed (frames between moves)
     unsigned int speedTimer;      // Timer for speed increases
+    unsigned char groundOffset;   // Ground pattern scroll offset (0-15)
 } DinoGameState;
 
 // Obstacle structure
@@ -110,7 +116,9 @@ void drawBird(unsigned char x, unsigned char y, unsigned char animFrame);  // Dr
 void drawStar(unsigned char x, unsigned char y);
 void drawMoon(unsigned char x, unsigned char y);
 void drawGroundLine(unsigned char y);
+void drawGroundLineScrolling(unsigned char page, unsigned char offset);
 void drawGroundLineAvoidSprites(unsigned char page, DinoGameState *dino, Obstacle *obstacles, unsigned char numObstacles);
+void updateGroundScroll(DinoGameState *state);  // Update ground scroll offset
 void animateGroundLineEntry(unsigned char page, DinoGameState *dino);  // Start animation - ground comes from right with dino running
 void clearSprite(unsigned char x, unsigned char y, unsigned char width);
 void initGameState(DinoGameState *state);

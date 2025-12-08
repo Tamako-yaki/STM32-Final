@@ -365,6 +365,9 @@ int main(void)
       if (obstacleFrameCounter >= game.currentSpeed) {
         obstacleFrameCounter = 0;
         
+        // Update ground scroll offset (scrolls with obstacles)
+        updateGroundScroll(&game);
+        
         for (int i = 0; i < MAX_OBSTACLES; i++) {
           if (obstacles[i].active) {
             // Clear old position

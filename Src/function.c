@@ -19,6 +19,27 @@
 #include "lcd.h"
 #include "string.h"
 
+// Ground pattern - creates varied terrain that scrolls
+// Mix of plain line, dips, bumps, and pebbles for natural look
+static const unsigned char groundPattern[GROUND_PATTERN_LENGTH] = {
+    SPRITE_GROUND_LINE,    // 0: plain
+    SPRITE_GROUND_LINE,    // 1: plain
+    SPRITE_GROUND_LINE_4,  // 2: pebbles
+    SPRITE_GROUND_LINE,    // 3: plain
+    SPRITE_GROUND_LINE_2,  // 4: small dip
+    SPRITE_GROUND_LINE,    // 5: plain
+    SPRITE_GROUND_LINE,    // 6: plain
+    SPRITE_GROUND_LINE_3,  // 7: small bump
+    SPRITE_GROUND_LINE,    // 8: plain
+    SPRITE_GROUND_LINE_4,  // 9: pebbles
+    SPRITE_GROUND_LINE,    // 10: plain
+    SPRITE_GROUND_LINE,    // 11: plain
+    SPRITE_GROUND_LINE_3,  // 12: small bump
+    SPRITE_GROUND_LINE,    // 13: plain
+    SPRITE_GROUND_LINE_2,  // 14: small dip
+    SPRITE_GROUND_LINE,    // 15: plain
+};
+
 // Initialize game state
 void initGameState(DinoGameState *state) {
     state->dinoX = GROUND_PAGE - GROUND_OFFSET; // Start 2 page above ground (page 5)
@@ -35,6 +56,7 @@ void initGameState(DinoGameState *state) {
     state->score = 0;
     state->currentSpeed = OBSTACLE_SPEED_INIT;  // Start with initial speed
     state->speedTimer = 0;  // Reset speed timer
+    state->groundOffset = 0;  // Reset ground scroll offset
 }
 
 // Draw the dino at current state position
@@ -209,21 +231,39 @@ void drawMoon(unsigned char x, unsigned char y) {
     LCD_DrawString(x, y, sprite, 2);
 }
 
-// Draw ground line (full width)
+// Draw ground line (full width) - static, no scrolling
 void drawGroundLine(unsigned char page) {
     // Draw a continuous line across the entire width at GROUND_PAGE
-    // Use SPRITE_GROUND_LINE (135) which has the line in the bottom byte
+    // Use SPRITE_GROUND_LINE (145) which has the line in the bottom byte
     unsigned char sprite[1] = {SPRITE_GROUND_LINE};
     for (unsigned char i = 0; i < 16; i++) {  // 128 pixels / 8 = 16 sprites
         LCD_DrawString(page, i * 8, sprite, 1);
     }
 }
 
+// Draw ground line with scrolling pattern
+// offset determines where in the pattern we start (creates scrolling effect)
+void drawGroundLineScrolling(unsigned char page, unsigned char offset) {
+    for (unsigned char i = 0; i < 16; i++) {
+        // Get sprite from pattern with offset for scrolling effect
+        unsigned char patternIndex = (i + offset) % GROUND_PATTERN_LENGTH;
+        unsigned char sprite[1] = {groundPattern[patternIndex]};
+        LCD_DrawString(page, i * 8, sprite, 1);
+    }
+}
+
+// Update ground scroll offset (call this when obstacles move)
+void updateGroundScroll(DinoGameState *state) {
+    state->groundOffset++;
+    if (state->groundOffset >= GROUND_PATTERN_LENGTH) {
+        state->groundOffset = 0;
+    }
+}
+
 // Draw ground line while avoiding dino and obstacle positions
 // This prevents the ground line from erasing the bottom half of sprites
+// Uses scrolling pattern based on dino's groundOffset
 void drawGroundLineAvoidSprites(unsigned char page, DinoGameState *dino, Obstacle *obstacles, unsigned char numObstacles) {
-    unsigned char sprite[1] = {SPRITE_GROUND_LINE};
-    
     // Create a mask of columns to skip (each bit = one 8-pixel block)
     // We have 16 blocks (128 pixels / 8 = 16)
     unsigned short skipMask = 0;
@@ -253,9 +293,12 @@ void drawGroundLineAvoidSprites(unsigned char page, DinoGameState *dino, Obstacl
         }
     }
     
-    // Draw ground line, skipping marked columns
+    // Draw ground line with scrolling pattern, skipping marked columns
     for (unsigned char i = 0; i < 16; i++) {
         if (!(skipMask & (1 << i))) {
+            // Get sprite from pattern with offset for scrolling effect
+            unsigned char patternIndex = (i + dino->groundOffset) % GROUND_PATTERN_LENGTH;
+            unsigned char sprite[1] = {groundPattern[patternIndex]};
             LCD_DrawString(page, i * 8, sprite, 1);
         }
     }
