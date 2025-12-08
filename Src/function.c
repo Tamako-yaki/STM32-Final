@@ -25,19 +25,19 @@ static const unsigned char groundPattern[GROUND_PATTERN_LENGTH] = {
     SPRITE_GROUND_LINE,    // 0: plain
     SPRITE_GROUND_LINE,    // 1: plain
     SPRITE_GROUND_LINE_4,  // 2: pebbles
+    SPRITE_GROUND_LINE_3,  // 7: small bump
     SPRITE_GROUND_LINE,    // 3: plain
-    SPRITE_GROUND_LINE_2,  // 4: small dip
     SPRITE_GROUND_LINE,    // 5: plain
     SPRITE_GROUND_LINE,    // 6: plain
-    SPRITE_GROUND_LINE_3,  // 7: small bump
+    SPRITE_GROUND_LINE_2,  // 4: small dip
     SPRITE_GROUND_LINE,    // 8: plain
     SPRITE_GROUND_LINE_4,  // 9: pebbles
     SPRITE_GROUND_LINE,    // 10: plain
     SPRITE_GROUND_LINE,    // 11: plain
     SPRITE_GROUND_LINE_3,  // 12: small bump
     SPRITE_GROUND_LINE,    // 13: plain
-    SPRITE_GROUND_LINE_2,  // 14: small dip
     SPRITE_GROUND_LINE,    // 15: plain
+	SPRITE_GROUND_LINE_2,  // 14: small dip
 };
 
 // Initialize game state
