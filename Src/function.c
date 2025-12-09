@@ -223,6 +223,12 @@ void drawStar(unsigned char x, unsigned char y) {
     LCD_DrawString(x, y, sprite, 2);
 }
 
+// Draw a cloud decoration
+void drawCloud(unsigned char x, unsigned char y) {
+    unsigned char sprite[2] = {SPRITE_CLOUD, SPRITE_CLOUD + 1};
+    LCD_DrawString(x, y, sprite, 2);
+}
+
 // Draw a moon decoration
 void drawMoon(unsigned char x, unsigned char y) {
     unsigned char sprite[2] = {SPRITE_MOON, SPRITE_MOON + 1};

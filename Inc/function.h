@@ -35,6 +35,7 @@
 #define SPRITE_CACTUS_BIG    120  // Big cactus (16x16) - indices 120-121
 #define SPRITE_CACTUS_SMALL  122  // Small cactus (8x16)
 #define SPRITE_STAR          123  // Star decoration (16x16) - indices 123-124
+#define SPRITE_CLOUD         149  // Cloud decoration (16x16) - indices 149-150
 #define SPRITE_DINO_STAND    125  // Dino standing/jumping (16x16) - indices 125-126
 #define SPRITE_DINO_RUN      127  // Dino running frame 1 (16x16) - indices 127-128
 #define SPRITE_DINO_RUN_2    129  // Dino running frame 2 (16x16) - indices 129-130
@@ -109,6 +110,7 @@ void updateDinoAnimation(DinoGameState *state);
 void drawCactus(unsigned char x, unsigned char y, unsigned char type);
 void drawBird(unsigned char x, unsigned char y, unsigned char animFrame);  // Draw animated bird
 void drawStar(unsigned char x, unsigned char y);
+void drawCloud(unsigned char x, unsigned char y);
 void drawMoon(unsigned char x, unsigned char y);
 void drawGroundLine(unsigned char y);
 void drawGroundLineAvoidSprites(unsigned char page, DinoGameState *dino, Obstacle *obstacles, unsigned char numObstacles);
