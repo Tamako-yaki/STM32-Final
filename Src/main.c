@@ -300,14 +300,10 @@ int main(void)
         }
       }
       
-      // Check for crouch button (USER button - active LOW with pull-up)
+      // Check for crouch button (active LOW with pull-up) - level triggered
+      // Crouch on ground or fast-fall in air while button held
       GPIO_PinState crouchState = HAL_GPIO_ReadPin(CROUCH_BUTTON_PORT, CROUCH_BUTTON_PIN);
-      if (crouchState == GPIO_PIN_RESET) {
-        // Crouch button pressed - either crouch on ground or fast-fall in air
-        game.isCrouching = 1;
-      } else {
-        game.isCrouching = 0;
-      }
+      game.isCrouching = (crouchState == GPIO_PIN_RESET);
       
       // Update dino physics
       handleJump(&game);
