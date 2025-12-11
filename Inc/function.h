@@ -121,9 +121,7 @@ void handleJump(DinoGameState *state);
 void drawScore(unsigned int score, unsigned char x, unsigned char y);
 void drawGameScore(unsigned int score);  // Draw score in upper right corner
 void drawStartScreen(void);
-void clearStartScreen(void);
 void drawEndScreen(void);
-void clearEndScreen(void);
 void updateLivesLED(unsigned char lives);
 void updateGameSpeed(DinoGameState *state);  // PWM-based speed control
 

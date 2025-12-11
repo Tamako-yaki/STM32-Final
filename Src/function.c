@@ -407,12 +407,6 @@ void drawStartScreen(void) {
     LCD_DrawString(3, 44, startText, 5);
 }
 
-// Clear the START text from the screen
-void clearStartScreen(void) {
-    unsigned char blank[5] = {22, 22, 22, 22, 22};  // Index 22 is blank
-    LCD_DrawString(3, 44, blank, 5);
-}
-
 // Draw "GAME OVER" text in the middle of the LCD
 // ChineseTable indices: G=62, A=56, M=68, E=60, space=22, O=70, V=77, E=60, R=73
 void drawEndScreen(void) {
@@ -420,12 +414,6 @@ void drawEndScreen(void) {
     // LCD is 128 pixels wide, center at (128-72)/2 = 28
     unsigned char gameOverText[9] = {62, 56, 68, 60, 22, 70, 77, 60, 73};  // G, A, M, E, (space), O, V, E, R
     LCD_DrawString(3, 28, gameOverText, 9);  // GAME OVER centered on single line
-}
-
-// Clear the GAME OVER text from the screen
-void clearEndScreen(void) {
-    unsigned char blank[9] = {22, 22, 22, 22, 22, 22, 22, 22, 22};  // Index 22 is blank
-    LCD_DrawString(3, 28, blank, 9);  // Clear GAME OVER
 }
 
 // Update LEDs to show number of lives (1-4)

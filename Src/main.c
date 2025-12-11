@@ -269,7 +269,6 @@ int main(void)
   UART_SendString("\r\n");
   
   // Clear start screen and draw game elements
-  clearStartScreen();
   LCD_Clear();
   
   // Animate ground line entry from right to left with dino running animation
@@ -473,7 +472,6 @@ int main(void)
         HAL_Delay(500);  // Debounce
         
         // Restart game - go back to start screen
-        clearEndScreen();  // Clear END text
         LCD_Clear();
         initGameState(&game);
         for (int i = 0; i < MAX_OBSTACLES; i++) {
@@ -531,7 +529,6 @@ int main(void)
         UART_SendNumber(game.lives);
         UART_SendString("\r\n");
         
-        clearStartScreen();
         LCD_Clear();
         
         // Animate ground line entry from right to left with dino running animation
