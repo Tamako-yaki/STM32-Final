@@ -293,8 +293,7 @@ int main(void)
       clearSprite(game.dinoX, game.dinoY, 2);
       
       // Check for button press (jump) - edge triggered
-      GPIO_PinState jumpState = HAL_GPIO_ReadPin(BUTTON_PORT, BUTTON_PIN);
-      if (jumpState == GPIO_PIN_SET) {
+      if (HAL_GPIO_ReadPin(BUTTON_PORT, BUTTON_PIN) == GPIO_PIN_SET) {
         if (!game.isJumping && game.jumpHeight == 0 && !game.isCrouching) {
           game.isJumping = 1;
         }
@@ -470,8 +469,7 @@ int main(void)
       
     } else {
       // Game over state - wait for button to restart
-      GPIO_PinState jumpState = HAL_GPIO_ReadPin(BUTTON_PORT, BUTTON_PIN);
-      if (jumpState == GPIO_PIN_SET) {
+      if (HAL_GPIO_ReadPin(BUTTON_PORT, BUTTON_PIN) == GPIO_PIN_SET) {
         HAL_Delay(500);  // Debounce
         
         // Restart game - go back to start screen
