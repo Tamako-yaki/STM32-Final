@@ -49,7 +49,6 @@ void initGameState(DinoGameState *state) {
     state->isCrouching = 0;
     state->jumpVelocity = 0;
     state->jumpFrameCounter = 0;
-    state->buttonHeld = 0;
     state->lives = 1;
     state->score = 0;
     state->currentSpeed = OBSTACLE_SPEED_INIT;

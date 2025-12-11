@@ -85,7 +85,6 @@ typedef struct {
     unsigned char isCrouching;    // Crouch state flag
     signed char jumpVelocity;     // Current jump velocity (positive=up, negative=down)
     unsigned char jumpFrameCounter; // Frame counter for smooth movement timing
-    unsigned char buttonHeld;     // Whether jump button is being held
     unsigned char lives;          // Number of lives (1-4)
     unsigned int score;           // Current game score
     unsigned char currentSpeed;   // Current obstacle speed (frames between moves)

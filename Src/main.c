@@ -113,7 +113,7 @@ void Error_Handler(void);
 extern volatile unsigned char gameTimerFlag;
 
 Obstacle obstacles[MAX_OBSTACLES];
-unsigned int nextObstacleSpawn = 100;
+unsigned int nextObstacleSpawn = 100; // Default value for frames between obstacles
 
 // Simple pseudo-random number generator
 unsigned int randomSeed = 12345;
@@ -292,15 +292,12 @@ int main(void)
       // Clear old dino position
       clearSprite(game.dinoX, game.dinoY, 2);
       
-      // Check for button press (jump) - level triggered
-      GPIO_PinState buttonState = HAL_GPIO_ReadPin(BUTTON_PORT, BUTTON_PIN);
-      if (buttonState == GPIO_PIN_SET) {
-        game.buttonHeld = 1;  // Track button is being held
+      // Check for button press (jump) - edge triggered
+      GPIO_PinState jumpState = HAL_GPIO_ReadPin(BUTTON_PORT, BUTTON_PIN);
+      if (jumpState == GPIO_PIN_SET) {
         if (!game.isJumping && game.jumpHeight == 0 && !game.isCrouching) {
           game.isJumping = 1;
         }
-      } else {
-        game.buttonHeld = 0;  // Button released
       }
       
       // Check for crouch button (USER button - active LOW with pull-up)
@@ -477,8 +474,8 @@ int main(void)
       
     } else {
       // Game over state - wait for button to restart
-      GPIO_PinState buttonState = HAL_GPIO_ReadPin(BUTTON_PORT, BUTTON_PIN);
-      if (buttonState == GPIO_PIN_SET) {
+      GPIO_PinState jumpState = HAL_GPIO_ReadPin(BUTTON_PORT, BUTTON_PIN);
+      if (jumpState == GPIO_PIN_SET) {
         HAL_Delay(500);  // Debounce
         
         // Restart game - go back to start screen
