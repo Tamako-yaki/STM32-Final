@@ -409,8 +409,7 @@ int main(void)
           } else {
             // Cactus collision: only hits dino if dino is on ground (not jumping high enough)
             // Jump to avoid!
-            unsigned char verticalOverlap = (game.dinoX >= obstacles[i].x - 1);
-            if (horizontalOverlap && verticalOverlap) {
+            if (horizontalOverlap && game.dinoX >= obstacles[i].x - 1) {
               collision = 1;
             }
           }
